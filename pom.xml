@@ -13,6 +13,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>tilab</id>
+            <url>https://jade.tilab.com/maven/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -47,11 +54,11 @@
             <version>3.8.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.sf.ingenias/jade -->
+        <!-- https://mvnrepository.com/artifact/com.tilab.jade/jade -->
         <dependency>
-            <groupId>net.sf.ingenias</groupId>
+            <groupId>com.tilab.jade</groupId>
             <artifactId>jade</artifactId>
-            <version>4.3</version>
+            <version>4.5.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable -->
