@@ -1,0 +1,22 @@
+@relation Prediction.arff
+
+@attribute Aluminium numeric
+@attribute Krzem numeric
+@attribute Magnez numeric
+@attribute Miedz numeric
+@attribute Cynk numeric
+@attribute Cyna numeric
+@attribute Nikiel numeric
+@attribute Zelazo numeric
+@attribute Olow numeric
+@attribute TemperaturaWytapiania numeric
+@attribute CzasWytapiania numeric
+@attribute TemperaturaStudzenia numeric
+@attribute CzasPodgrzewania numeric
+@attribute TemperaturaStudzenia2 numeric
+@attribute CzasPodgrzewania2 numeric
+@attribute StopieńUszlachetniania numeric
+@attribute Jakość numeric
+
+@data
+20,5,5,20,10,15,0,5,20,1500,50,1000,15,700,25,1,73.389512
