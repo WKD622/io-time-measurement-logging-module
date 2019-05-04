@@ -1,4 +1,5 @@
 package agh.classification;
+import org.apache.log4j.net.*;
 
 public class MainClass {
 
