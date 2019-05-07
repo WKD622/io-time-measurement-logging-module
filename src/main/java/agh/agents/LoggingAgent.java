@@ -7,7 +7,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import javafx.beans.property.SimpleStringProperty;
 
-public class LoggingAgent extends Agent implements ILogging{
+public class LoggingAgent extends Agent implements ILogging {
 
     public SimpleStringProperty logs = new SimpleStringProperty("");
 
@@ -17,9 +17,9 @@ public class LoggingAgent extends Agent implements ILogging{
             public void action() {
                 ACLMessage msg = myAgent.receive();
                 if (msg != null) {
-                    String[] message = msg.getContent().split("##",2);
+                    String[] message = msg.getContent().split("##", 2);
                     System.out.println(message[0] + ": " + message[1]);
-                    logs.setValue(logs.getValue()+ "\n" + message[0] + ": " + message[1]);
+                    logs.setValue(logs.getValue() + "\n" + message[0] + ": " + message[1]);
                 } else {
                     block();
                 }
@@ -30,7 +30,7 @@ public class LoggingAgent extends Agent implements ILogging{
     public static ACLMessage prepareLog(LogLevel level, String message) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(new AID("Logging-agent", AID.ISLOCALNAME));
-        msg.setContent(level.toString()+"##"+message);
+        msg.setContent(level.toString() + "##" + message);
         return msg;
     }
 
