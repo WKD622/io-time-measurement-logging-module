@@ -31,6 +31,21 @@ public class MainController {
     }
 
     @FXML
+    protected void handleLogging(ActionEvent event) {
+
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/fxml/logging.fxml"));
+        Parent root;
+        try {
+            root = (Parent) loader.load();
+            LoggingController controller = (LoggingController) loader.getController();
+            controller.setScene((Stage) mainPane.getScene().getWindow(), root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     protected void handlePrediction(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass()
                 .getResource("/fxml/predict.fxml"));
