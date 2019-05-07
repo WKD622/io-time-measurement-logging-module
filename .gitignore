@@ -25,3 +25,5 @@ hs_err_pid*
 !TrainingData.arff
 /target
 /.idea
+.DS_Store
+*.iml
