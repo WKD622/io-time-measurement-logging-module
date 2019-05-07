@@ -1,5 +1,9 @@
 package agh.controllers;
 
+import agh.agents.MainContainer;
+import jade.wrapper.AgentController;
+import jade.wrapper.ControllerException;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -12,6 +16,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Logger implements Initializable {
+    public SimpleStringProperty log = new SimpleStringProperty("");
+
     private Controller controller = Controller.getInstance();
 
     @FXML
@@ -22,6 +28,15 @@ public class Logger implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Init!");
+
+        logWindow.textProperty().bind(log);
+        try {
+            AgentController ac = MainContainer.cc.getAgent("Logging-agent");
+            ILogging logInterface = ac.getO2AInterface(ILogging.class);
+            logWindow.textProperty().bind(logInterface.getLog());
+        } catch (ControllerException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setScene(Stage stage, Parent root) {
