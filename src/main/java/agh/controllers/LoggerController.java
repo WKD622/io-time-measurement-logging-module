@@ -2,8 +2,10 @@ package agh.controllers;
 
 import agh.agents.ILogging;
 import agh.agents.MainContainer;
+import agh.utils.LogMessage;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,10 +17,9 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class LoggerController implements Initializable {
-    public SimpleStringProperty log = new SimpleStringProperty("");
-
     private Controller controller = Controller.getInstance();
 
     @FXML
@@ -30,11 +31,12 @@ public class LoggerController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Init!");
 
-        logWindow.textProperty().bind(log);
         try {
             AgentController ac = MainContainer.cc.getAgent("Logging-agent");
             ILogging logInterface = ac.getO2AInterface(ILogging.class);
-            logWindow.textProperty().bind(logInterface.getLog());
+            logWindow.textProperty().bind(Bindings.createStringBinding(
+                    () -> logInterface.getLog().stream().map(LogMessage::getLog).collect(Collectors.joining("\n")),
+                    logInterface.getLog()));
         } catch (ControllerException e) {
             e.printStackTrace();
         }

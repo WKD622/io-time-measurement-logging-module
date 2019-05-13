@@ -1,7 +1,8 @@
 package agh.agents;
 
-import javafx.beans.property.SimpleStringProperty;
+import agh.utils.LogMessage;
+import javafx.beans.property.ListProperty;
 
 public interface ILogging {
-    SimpleStringProperty getLog();
+    ListProperty<LogMessage> getLog();
 }

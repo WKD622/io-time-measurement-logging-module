@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.Font?>
-<?import javafx.geometry.Insets?>
-
-<?import javafx.collections.FXCollections?>
+<?import java.lang.*?>
 <Pane fx:id="LoggerPane"
       prefHeight="660.0" prefWidth="923.0"
       xmlns:fx="http://javafx.com/fxml"
