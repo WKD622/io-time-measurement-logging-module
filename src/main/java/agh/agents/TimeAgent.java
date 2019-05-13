@@ -10,14 +10,14 @@ import java.util.*;
 public class TimeAgent extends Agent implements ILogging {
     private List<Stoper> stopers = new ArrayList<>();
     private SimpleStringProperty times = new SimpleStringProperty("");
-    private Stoper stoperWytapianie = new Stoper(StoperType.WATAPIANIE);
-    private Stoper stoperKrzepiniecie = new Stoper(StoperType.KRZEPNIECIE);
-    private Stoper stoperStudzenie1 = new Stoper(StoperType.STUDZENIE1);
-    private Stoper stoperPodgrzanie1 = new Stoper(StoperType.PODGRZANIE1);
-    private Stoper stoperStudzenie2 = new Stoper(StoperType.STUDZENIE2);
-    private Stoper stoperPodgrzanie2 = new Stoper(StoperType.PODGRZANIE2);
-    private Stoper stoperUszlachetnianie = new Stoper(StoperType.USZLACHETNIANIE);
-    private Stoper stoperLearning = new Stoper(StoperType.LEARNING);
+    private RealStoper stoperWytapianie = new RealStoper(StoperType.WATAPIANIE);
+    private RealStoper stoperKrzepiniecie = new RealStoper(StoperType.KRZEPNIECIE);
+    private RealStoper stoperStudzenie1 = new RealStoper(StoperType.STUDZENIE1);
+    private RealStoper stoperPodgrzanie1 = new RealStoper(StoperType.PODGRZANIE1);
+    private RealStoper stoperStudzenie2 = new RealStoper(StoperType.STUDZENIE2);
+    private RealStoper stoperPodgrzanie2 = new RealStoper(StoperType.PODGRZANIE2);
+    private RealStoper stoperUszlachetnianie = new RealStoper(StoperType.USZLACHETNIANIE);
+    private CpuStoper stoperLearning = new CpuStoper(StoperType.LEARNING);
 
     public TimeAgent() {
         this.stopers.addAll(Arrays.asList(stoperWytapianie, stoperKrzepiniecie, stoperStudzenie1, stoperPodgrzanie1, stoperStudzenie2, stoperPodgrzanie2, stoperUszlachetnianie, stoperLearning));
@@ -101,46 +101,71 @@ public class TimeAgent extends Agent implements ILogging {
         }
     }
 
-    class Stoper {
+    interface Stoper {
+        public StoperType getType();
+
+        public void start();
+
+        public double getTimePassed();
+
+        public boolean isMeasuring();
+
+        public boolean isEnded();
+
+        public void stop();
+
+        public double getMeasurement();
+
+        public void reset();
+    }
+
+    class RealStoper implements Stoper {
         private boolean ended;
         private boolean isMeasuring;
         private long start;
         private long stop;
         private StoperType type;
 
-        public Stoper(StoperType type) {
+        public RealStoper(StoperType type) {
             this.isMeasuring = false;
             this.type = type;
             this.ended = false;
         }
 
+        @Override
         public StoperType getType() {
             return this.type;
         }
 
+        @Override
         public void start() {
             this.start = System.currentTimeMillis();
             this.isMeasuring = true;
         }
 
+        @Override
         public double getTimePassed() {
             return (System.currentTimeMillis() - this.start) / 1000.0;
         }
 
+        @Override
         public boolean isMeasuring() {
             return this.isMeasuring;
         }
 
+        @Override
         public boolean isEnded() {
             return this.ended;
         }
 
+        @Override
         public void stop() {
             stop = System.currentTimeMillis();
             this.isMeasuring = false;
             this.ended = true;
         }
 
+        @Override
         public double getMeasurement() {
             return (stop - start) / 1000.0;
         }
@@ -149,6 +174,69 @@ public class TimeAgent extends Agent implements ILogging {
             return this.getMeasurement() + " s.";
         }
 
+        @Override
+        public void reset() {
+            this.start = 0;
+            this.stop = 0;
+        }
+    }
+
+    class CpuStoper implements Stoper {
+        private boolean ended;
+        private boolean isMeasuring;
+        private long start;
+        private long stop;
+        private StoperType type;
+
+        public CpuStoper(StoperType type) {
+            this.isMeasuring = false;
+            this.type = type;
+            this.ended = false;
+        }
+
+        @Override
+        public StoperType getType() {
+            return this.type;
+        }
+
+        @Override
+        public void start() {
+            this.start = System.nanoTime();
+            this.isMeasuring = true;
+        }
+
+        @Override
+        public double getTimePassed() {
+            return (System.nanoTime() - this.start) / 1000.0;
+        }
+
+        @Override
+        public boolean isMeasuring() {
+            return this.isMeasuring;
+        }
+
+        @Override
+        public boolean isEnded() {
+            return this.ended;
+        }
+
+        @Override
+        public void stop() {
+            stop = System.nanoTime();
+            this.isMeasuring = false;
+            this.ended = true;
+        }
+
+        @Override
+        public double getMeasurement() {
+            return (stop - start) / 1000.0;
+        }
+
+        public String toString() {
+            return this.getMeasurement() + " s.";
+        }
+
+        @Override
         public void reset() {
             this.start = 0;
             this.stop = 0;
