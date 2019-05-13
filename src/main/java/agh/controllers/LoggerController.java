@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Logger implements Initializable {
+public class LoggerController implements Initializable {
     public SimpleStringProperty log = new SimpleStringProperty("");
 
     private Controller controller = Controller.getInstance();
@@ -48,6 +48,7 @@ public class Logger implements Initializable {
 
     @FXML
     void handleBack() {
+        System.out.println("Back");
         controller.handleBack(LoggerPane);
     }
 }

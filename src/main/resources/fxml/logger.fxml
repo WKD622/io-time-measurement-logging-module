@@ -7,25 +7,79 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Font?>
-<AnchorPane fx:id="LoggerPane"
-            xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="agh.controllers.Logger">
-    <BorderPane layoutX="-6.0" layoutY="-6.0">
-        <top>
-            <Pane prefHeight="78.0" prefWidth="923.0" BorderPane.alignment="CENTER">
-                <Label layoutX="401.0" layoutY="20.0" text="Logger">
-                    <font><Font size="36.0" /></font>
-                </Label>
+<?import javafx.geometry.Insets?>
 
-                <Button layoutX="45.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleBack" prefHeight="38.0" prefWidth="75.0" text="Powrót" />
-            </Pane>
-        </top>
-        <center>
-            <Pane prefHeight="660.0" prefWidth="923.0" BorderPane.alignment="CENTER_RIGHT">
-                <TextArea fx:id="logWindow" editable="false" layoutX="50.0" layoutY="0.0" prefHeight="550.0" prefWidth="823.0" />
-                <Button layoutX="800.0" layoutY="600.0" mnemonicParsing="false" prefHeight="38.0" text="Zapisz do pliku"/>
-            </Pane>
-        </center>
-    </BorderPane>
-</AnchorPane>
+<?import javafx.collections.FXCollections?>
+<Pane fx:id="LoggerPane"
+      prefHeight="660.0" prefWidth="923.0"
+      xmlns:fx="http://javafx.com/fxml"
+      xmlns="http://javafx.com/javafx"
+      fx:controller="agh.controllers.LoggerController"
+>
+    <VBox alignment="CENTER" spacing="20.0" prefWidth="923.0">
+        <Label text="Logger">
+            <font><Font size="36.0" /></font>
+        </Label>
+        <Separator prefHeight="2.0" prefWidth="920.0" />
+        <padding><Insets top="20.0"/></padding>
+    </VBox>
+    <Button layoutX="40.0" layoutY="20.0" prefHeight="38.0" onAction="#handleBack" text="Powrót"/>
+
+    <VBox spacing="20.0" layoutY="80.0" prefHeight="580.0" prefWidth="923.0">
+        <padding><Insets top="20" right="40" bottom="20" left="40" /></padding>
+
+        <HBox alignment="BASELINE_CENTER">
+            <VBox>
+                <Label text="Poziom" />
+                <ChoiceBox prefWidth="200" value="-">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="-"/>
+                            <String fx:value="Informacje"/>
+                            <String fx:value="Ostrzeżenia"/>
+                            <String fx:value="Błędy"/>
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <VBox>
+                <Label text="Agent" />
+                <ChoiceBox prefWidth="200" value="-">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="-"/>
+                            <String fx:value="Agent 1"/>
+                            <String fx:value="Agent 2"/>
+                            <String fx:value="Agent 3"/>
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <VBox>
+                <Label text="Mierzony czas" />
+                <ChoiceBox prefWidth="200" value="-">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="-"/>
+                            <String fx:value="Rzeczywisty"/>
+                            <String fx:value="Procesora"/>
+                            <String fx:value="Użytkownika"/>
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            </VBox>
+        </HBox>
+        <TextArea VBox.vgrow="ALWAYS" fx:id="logWindow" editable="false"/>
+        <HBox alignment="BASELINE_RIGHT">
+            <Button prefHeight="38.0" text="Zapisz do pliku"/>
+        </HBox>
+    </VBox>
+</Pane>
+
+

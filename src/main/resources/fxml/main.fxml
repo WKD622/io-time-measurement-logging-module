@@ -15,7 +15,7 @@
         </font>
     </Label>
     <Separator layoutY="99.0" prefHeight="18.0" prefWidth="1140.0" />
-    <Button layoutX="317.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleTesting" prefHeight="78.0" prefWidth="300.0" text="Klasyfikacja" />
-    <Button layoutX="317.0" layoutY="391.0" mnemonicParsing="false" onAction="#handlePrediction" prefHeight="78.0" prefWidth="300.0" text="Przewidywanie" />
-    <Button layoutX="317.0" layoutY="501.0" mnemonicParsing="false" onAction="#handleLogging" prefHeight="78.0" prefWidth="300.0" text="Logi" />
+    <Button layoutX="317.0" layoutY="285.0" mnemonicParsing="false" onAction="#handleTesting" prefHeight="78.0" prefWidth="300.0" text="Klasyfikacja" />
+    <Button layoutX="317.0" layoutY="390.0" mnemonicParsing="false" onAction="#handlePrediction" prefHeight="78.0" prefWidth="300.0" text="Przewidywanie" />
+    <Button layoutX="317.0" layoutY="495.0" mnemonicParsing="false" onAction="#handleLogging" prefHeight="78.0" prefWidth="300.0" text="Logi" />
 </Pane>

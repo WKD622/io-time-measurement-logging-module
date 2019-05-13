@@ -136,7 +136,7 @@ public class PredictController implements Initializable {
         Parent root;
         try {
             root = loader.load();
-            Logger controller = loader.getController();
+            LoggerController controller = loader.getController();
             controller.setScene((Stage) PredictPane.getScene().getWindow(), root);
         } catch (IOException e) {
             e.printStackTrace();
