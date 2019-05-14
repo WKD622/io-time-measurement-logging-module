@@ -27,7 +27,7 @@ public class TimeAgent extends Agent {
         return times;
     }
 
-    protected void setup() {
+    public void setup() {
 
         Thread T = new Thread(() -> {
             while (true) {
@@ -288,7 +288,7 @@ public class TimeAgent extends Agent {
         USZLACHETNIANIE,
     }
 
-    public class MeasuredTimesParser {
+    public static class MeasuredTimesParser {
         private Map<StoperType, Double> stopers;
         private String times;
 
