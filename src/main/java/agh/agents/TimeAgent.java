@@ -7,23 +7,22 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.util.*;
 
-public class TimeAgent extends Agent implements ILogging {
+public class TimeAgent extends Agent {
     private List<Stoper> stopers = new ArrayList<>();
     private SimpleStringProperty times = new SimpleStringProperty("");
-    private RealStoper stoperWytapianie = new RealStoper(StoperType.WATAPIANIE);
-    private RealStoper stoperKrzepiniecie = new RealStoper(StoperType.KRZEPNIECIE);
-    private RealStoper stoperStudzenie1 = new RealStoper(StoperType.STUDZENIE1);
-    private RealStoper stoperPodgrzanie1 = new RealStoper(StoperType.PODGRZANIE1);
-    private RealStoper stoperStudzenie2 = new RealStoper(StoperType.STUDZENIE2);
-    private RealStoper stoperPodgrzanie2 = new RealStoper(StoperType.PODGRZANIE2);
-    private RealStoper stoperUszlachetnianie = new RealStoper(StoperType.USZLACHETNIANIE);
-    private CpuStoper stoperLearning = new CpuStoper(StoperType.LEARNING);
+    private RealTimeStoper stoperWytapianie = new RealTimeStoper(StoperType.WATAPIANIE);
+    private RealTimeStoper stoperKrzepiniecie = new RealTimeStoper(StoperType.KRZEPNIECIE);
+    private RealTimeStoper stoperStudzenie1 = new RealTimeStoper(StoperType.STUDZENIE1);
+    private RealTimeStoper stoperPodgrzanie1 = new RealTimeStoper(StoperType.PODGRZANIE1);
+    private RealTimeStoper stoperStudzenie2 = new RealTimeStoper(StoperType.STUDZENIE2);
+    private RealTimeStoper stoperPodgrzanie2 = new RealTimeStoper(StoperType.PODGRZANIE2);
+    private RealTimeStoper stoperUszlachetnianie = new RealTimeStoper(StoperType.USZLACHETNIANIE);
+    private CpuTimeStoper stoperLearning = new CpuTimeStoper(StoperType.LEARNING);
 
     public TimeAgent() {
         this.stopers.addAll(Arrays.asList(stoperWytapianie, stoperKrzepiniecie, stoperStudzenie1, stoperPodgrzanie1, stoperStudzenie2, stoperPodgrzanie2, stoperUszlachetnianie, stoperLearning));
     }
 
-    @Override
     public SimpleStringProperty getLog() {
         return times;
     }
@@ -48,7 +47,6 @@ public class TimeAgent extends Agent implements ILogging {
         });
 
         T.start();
-        registerO2AInterface(ILogging.class, this);
         addBehaviour(new CyclicBehaviour(this) {
             public void action() {
                 ACLMessage msg = myAgent.receive();
@@ -63,40 +61,57 @@ public class TimeAgent extends Agent implements ILogging {
 
     private void parseMessage(String message) {
         if (message.contains("START")) {
-            if (message.contains(TimeStamps.START_WYTAPIANIE.toString())) {
+            if (message.contains(ProcessState.START_WYTAPIANIE.toString())) {
                 this.stoperWytapianie.start();
-            } else if (message.contains(TimeStamps.START_KRZEPNIECIE.toString())) {
+            } else if (message.contains(ProcessState.START_KRZEPNIECIE.toString())) {
                 this.stoperKrzepiniecie.start();
-            } else if (message.contains(TimeStamps.START_STUDZENIE_1.toString())) {
+            } else if (message.contains(ProcessState.START_STUDZENIE_1.toString())) {
                 this.stoperStudzenie1.start();
-            } else if (message.contains(TimeStamps.START_PODGRZANIE_1.toString())) {
+            } else if (message.contains(ProcessState.START_PODGRZANIE_1.toString())) {
                 this.stoperPodgrzanie1.start();
-            } else if (message.contains(TimeStamps.START_STUDZENIE_2.toString())) {
+            } else if (message.contains(ProcessState.START_STUDZENIE_2.toString())) {
                 this.stoperStudzenie2.start();
-            } else if (message.contains(TimeStamps.START_PODGRZANIE_2.toString())) {
+            } else if (message.contains(ProcessState.START_PODGRZANIE_2.toString())) {
                 this.stoperPodgrzanie2.start();
-            } else if (message.contains(TimeStamps.START_LEARNING.toString())) {
+            } else if (message.contains(ProcessState.START_LEARNING.toString())) {
                 this.stoperLearning.start();
-            } else if (message.contains(TimeStamps.START_USZLACHETNIANIE.toString())) {
+            } else if (message.contains(ProcessState.START_USZLACHETNIANIE.toString())) {
                 this.stoperUszlachetnianie.start();
             }
         } else if (message.contains("END")) {
-            if (message.contains(TimeStamps.END_WYTAPIANIE.toString())) {
+            StringBuilder sb = new StringBuilder();
+            if (message.contains(ProcessState.END_WYTAPIANIE.toString())) {
                 this.stoperWytapianie.stop();
-            } else if (message.contains(TimeStamps.END_KRZEPNIECIE.toString())) {
+                sb.append(this.stoperWytapianie.getType()).append("##").append(this.stoperWytapianie.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
+            } else if (message.contains(ProcessState.END_KRZEPNIECIE.toString())) {
                 this.stoperKrzepiniecie.stop();
-            } else if (message.contains(TimeStamps.END_STUDZENIE_1.toString())) {
+                sb.append(this.stoperKrzepiniecie.getType()).append("##").append(this.stoperKrzepiniecie.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
+            } else if (message.contains(ProcessState.END_STUDZENIE_1.toString())) {
                 this.stoperStudzenie1.stop();
-            } else if (message.contains(TimeStamps.END_PODGRZANIE_1.toString())) {
+                sb.append(this.stoperStudzenie1.getType()).append("##").append(this.stoperStudzenie1.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
+            } else if (message.contains(ProcessState.END_PODGRZANIE_1.toString())) {
                 this.stoperPodgrzanie1.stop();
-            } else if (message.contains(TimeStamps.END_STUDZENIE_2.toString())) {
+                sb.append(this.stoperPodgrzanie1.getType()).append("##").append(this.stoperPodgrzanie1.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
+            } else if (message.contains(ProcessState.END_STUDZENIE_2.toString())) {
                 this.stoperStudzenie2.stop();
-            } else if (message.contains(TimeStamps.END_PODGRZANIE_2.toString())) {
+                sb.append(this.stoperStudzenie2.getType()).append("##").append(this.stoperStudzenie2.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
+            } else if (message.contains(ProcessState.END_PODGRZANIE_2.toString())) {
                 this.stoperPodgrzanie2.stop();
-            } else if (message.contains(TimeStamps.END_USZLACHETNIANIE.toString())) {
+                sb.append(this.stoperPodgrzanie2.getType()).append("##").append(this.stoperPodgrzanie2.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
+            } else if (message.contains(ProcessState.END_USZLACHETNIANIE.toString())) {
                 this.stoperUszlachetnianie.stop();
-            } else if (message.contains(TimeStamps.END_LEARNING.toString())) {
+                sb.append(this.stoperUszlachetnianie.getType()).append("##").append(this.stoperUszlachetnianie.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
+            } else if (message.contains(ProcessState.END_LEARNING.toString())) {
                 this.stoperLearning.stop();
+                sb.append(this.stoperLearning.getType()).append("##").append(this.stoperLearning.getMeasurement()).append("%%");
+                times.setValue(sb.toString());
             }
         }
     }
@@ -119,14 +134,14 @@ public class TimeAgent extends Agent implements ILogging {
         public void reset();
     }
 
-    class RealStoper implements Stoper {
+    class RealTimeStoper implements Stoper {
         private boolean ended;
         private boolean isMeasuring;
         private long start;
         private long stop;
         private StoperType type;
 
-        public RealStoper(StoperType type) {
+        public RealTimeStoper(StoperType type) {
             this.isMeasuring = false;
             this.type = type;
             this.ended = false;
@@ -181,14 +196,14 @@ public class TimeAgent extends Agent implements ILogging {
         }
     }
 
-    class CpuStoper implements Stoper {
+    class CpuTimeStoper implements Stoper {
         private boolean ended;
         private boolean isMeasuring;
         private long start;
         private long stop;
         private StoperType type;
 
-        public CpuStoper(StoperType type) {
+        public CpuTimeStoper(StoperType type) {
             this.isMeasuring = false;
             this.type = type;
             this.ended = false;
@@ -243,7 +258,7 @@ public class TimeAgent extends Agent implements ILogging {
         }
     }
 
-    enum TimeStamps {
+    enum ProcessState {
         START_LEARNING,
         END_LEARNING,
         START_WYTAPIANIE,
@@ -286,8 +301,8 @@ public class TimeAgent extends Agent implements ILogging {
         private void parse() {
             List<String> timesList = Arrays.asList(times.split("%%"));
             for (String stoper : timesList) {
-                String stoperType = stoper.split("%%")[0];
-                String time = stoper.split("%%")[1];
+                String stoperType = stoper.split("##")[0];
+                String time = stoper.split("##")[1];
                 if (stoperType.contains(StoperType.LEARNING.toString())) {
                     this.stopers.put(StoperType.LEARNING, Double.parseDouble(time));
                 } else if (stoperType.contains(StoperType.WATAPIANIE.toString())) {
