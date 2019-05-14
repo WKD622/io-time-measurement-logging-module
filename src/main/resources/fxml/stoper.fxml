@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="stoperPane"
+            fx:controller="agh.controllers.StoperController"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="660.0" prefWidth="923.0"
+>
+    <Button AnchorPane.leftAnchor="40.0"
+            AnchorPane.topAnchor="20.0"
+            onAction="#handleBack"
+            prefHeight="38.0"
+            text="Powrót" textAlignment="CENTER" wrapText="true" />
+
+    <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="58.0" AnchorPane.bottomAnchor="0.0" spacing="20">
+        <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
+        <VBox prefWidth="410.0">
+            <Label text="Parametry procesu produkcji">
+                <VBox.margin><Insets bottom="5"/></VBox.margin>
+            </Label>
+            <TextArea fx:id="parametersTextArea" editable="false"/>
+
+            <Label text="Aktualne informacje">
+                <VBox.margin><Insets top="15" bottom="5"/></VBox.margin>
+            </Label>
+            <TextArea fx:id="infoTextArea" editable="false"/>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <HBox spacing="20">
+                <Button prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
+                <Button prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
+            </HBox>
+        </VBox>
+
+        <VBox prefWidth="410.0">
+            <Label text="Logowanie:">
+                <VBox.margin><Insets bottom="5"/></VBox.margin>
+            </Label>
+            <TextField fx:id="logField" editable="true" />
+            <HBox>
+                <VBox.margin><Insets top="10" /></VBox.margin>
+                <Button prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
+            </HBox>
+
+            <Label text="Czas do następnego etapu">
+                <VBox.margin><Insets top="120"/></VBox.margin>
+            </Label>
+            <Text text="Test text">
+                <font><Font size="28"/></font>
+            </Text>
+
+            <Label text="Czas do następnego etapu">
+                <VBox.margin><Insets top="15"/></VBox.margin>
+            </Label>
+            <Text text="Test text">
+                <font><Font size="28"/></font>
+            </Text>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <HBox alignment="CENTER_RIGHT">
+                <Button prefHeight="38" text="Zakończ" textAlignment="CENTER" wrapText="true" />
+            </HBox>
+        </VBox>
+    </HBox>
+</AnchorPane>

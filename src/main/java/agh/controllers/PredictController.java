@@ -131,12 +131,12 @@ public class PredictController implements Initializable {
     }
 
     @FXML
-    void handleShowLogs() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/logger.fxml"));
+    void handleShowStoper() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stoper.fxml"));
         Parent root;
         try {
             root = loader.load();
-            LoggerController controller = loader.getController();
+            StoperController controller = loader.getController();
             controller.setScene((Stage) PredictPane.getScene().getWindow(), root);
         } catch (IOException e) {
             e.printStackTrace();
