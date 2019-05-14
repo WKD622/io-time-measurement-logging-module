@@ -44,7 +44,11 @@ public class LoggingAgent extends Agent implements ILogging{
     }
 
     public static ACLMessage prepareLog(LogLevel level, String message) {
-        return prepareLog(level, "", LocalTime.now().toString(), message);
+        return prepareLog(level, "", message);
+    }
+
+    public static ACLMessage prepareLog(LogLevel level, String agent, String message) {
+        return prepareLog(level, agent, LocalTime.now().toString(), message);
     }
 
     public static ACLMessage prepareLog(LogLevel level, String agent, String time, String message) {
