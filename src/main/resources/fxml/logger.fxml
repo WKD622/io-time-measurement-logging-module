@@ -27,15 +27,15 @@
         <HBox alignment="BASELINE_CENTER">
             <VBox>
                 <Label text="Poziom" />
-                <ChoiceBox prefWidth="200" value="-">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="-"/>
-                            <String fx:value="Informacje"/>
-                            <String fx:value="Ostrzeżenia"/>
-                            <String fx:value="Błędy"/>
-                        </FXCollections>
-                    </items>
+                <ChoiceBox fx:id="logLevelFilterBox" onAction="#levelFilterAction" prefWidth="200" value="-">
+                    <!--<items>-->
+                        <!--<FXCollections fx:factory="observableArrayList">-->
+                            <!--<String fx:value="-"/>-->
+                            <!--<String fx:value="Informacje"/>-->
+                            <!--<String fx:value="Ostrzeżenia"/>-->
+                            <!--<String fx:value="Błędy"/>-->
+                        <!--</FXCollections>-->
+                    <!--</items>-->
                 </ChoiceBox>
             </VBox>
 
@@ -43,15 +43,15 @@
 
             <VBox>
                 <Label text="Agent" />
-                <ChoiceBox prefWidth="200" value="-">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="-"/>
-                            <String fx:value="Agent 1"/>
-                            <String fx:value="Agent 2"/>
-                            <String fx:value="Agent 3"/>
-                        </FXCollections>
-                    </items>
+                <ChoiceBox fx:id="agentFilterBox" onAction="#agentFilterAction" prefWidth="200" value="-">
+                    <!--<items>-->
+                        <!--<FXCollections fx:factory="observableArrayList">-->
+                            <!--<String fx:value="-"/>-->
+                            <!--<String fx:value="Agent 1"/>-->
+                            <!--<String fx:value="Agent 2"/>-->
+                            <!--<String fx:value="Agent 3"/>-->
+                        <!--</FXCollections>-->
+                    <!--</items>-->
                 </ChoiceBox>
             </VBox>
 
@@ -59,15 +59,15 @@
 
             <VBox>
                 <Label text="Mierzony czas" />
-                <ChoiceBox prefWidth="200" value="-">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="-"/>
-                            <String fx:value="Rzeczywisty"/>
-                            <String fx:value="Procesora"/>
-                            <String fx:value="Użytkownika"/>
-                        </FXCollections>
-                    </items>
+                <ChoiceBox fx:id="timeFilterBox" onAction="#timeFilterAction" prefWidth="200" value="-">
+                    <!--<items>-->
+                        <!--<FXCollections fx:factory="observableArrayList">-->
+                            <!--<String fx:value="-"/>-->
+                            <!--<String fx:value="Rzeczywisty"/>-->
+                            <!--<String fx:value="Procesora"/>-->
+                            <!--<String fx:value="Użytkownika"/>-->
+                        <!--</FXCollections>-->
+                    <!--</items>-->
                 </ChoiceBox>
             </VBox>
         </HBox>
