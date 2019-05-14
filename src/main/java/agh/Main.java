@@ -1,8 +1,8 @@
 package agh;
 
 import agh.agents.InterfaceUI;
-import agh.classification.ProductionData;
 import agh.agents.MainContainer;
+import agh.classification.ProductionData;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
@@ -33,6 +33,9 @@ public class Main extends Application {
     public static void main(String[] args) throws IOException, InterruptedException, ControllerException {
 
         try {
+            AgentController loggingAgent = MainContainer.cc.createNewAgent("Logging-agent",
+                    "agh.agents.LoggingAgent", null);
+            loggingAgent.start();
             AgentController prod = MainContainer.cc.createNewAgent("Production-agent",
                     "agh.agents.ProductionAgent", null);
             prod.start();

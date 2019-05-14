@@ -1,5 +1,6 @@
 package agh.agents;
 
+import agh.utils.LogLevel;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -123,7 +124,7 @@ public class UIAgent extends Agent implements InterfaceUI {
 
                     case (0):
                         ACLMessage msgProcessInit = new ACLMessage(AgentMessages.START_LEARNING_AGENT);
-                        System.out.println("Started learning agent");
+                        send(LoggingAgent.prepareLog(LogLevel.INFO, "Started learning agent"));
                         msgProcessInit.setContent("");
                         msgProcessInit.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                         send(msgProcessInit);
@@ -140,7 +141,7 @@ public class UIAgent extends Agent implements InterfaceUI {
 
                     case (2):
                         ACLMessage msgSetValues = new ACLMessage(AgentMessages.START_LEARNING);
-                        System.out.println("Started learning");
+                        send(LoggingAgent.prepareLog(LogLevel.INFO, "Started learning"));
                         msgSetValues.setContent("");
                         msgSetValues.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                         send(msgSetValues);

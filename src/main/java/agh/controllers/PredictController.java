@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -127,6 +128,20 @@ public class PredictController implements Initializable {
         input.setText(results[0]);
         cost.setText(results[1]);
         quality.setText(results[2]);
+    }
+
+    @FXML
+    void handleShowLogs() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/logger.fxml"));
+        Parent root;
+        try {
+            root = loader.load();
+            LoggerController controller = loader.getController();
+            controller.setScene((Stage) PredictPane.getScene().getWindow(), root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
