@@ -1,13 +1,13 @@
 package agh.utils;
 
-public enum AgentsFilters {
+public enum Agents {
     EMPTY("-"),
     LEARNING_AGENT("Agent uczący"),
     PROCESS_AGENT("Agent procesu"),
     PRODUCTION_AGENT("Agent produkcji");
 
     private String displayName;
-    AgentsFilters(String displayName) {
+    Agents(String displayName) {
         this.displayName = displayName;
     }
 
