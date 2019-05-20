@@ -45,28 +45,28 @@
         </VBox>
 
         <VBox prefWidth="410.0">
-            <Label fx:id="logText" text="Logowanie:">
+            <Label text="Logowanie:">
                 <VBox.margin><Insets bottom="5"/></VBox.margin>
             </Label>
             <TextField fx:id="logField" editable="true" />
             <HBox>
                 <VBox.margin><Insets top="10" /></VBox.margin>
-                <Button prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="logButton" prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="showLogs" prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="showLogs" onAction="#handleShowLogs" prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
             </HBox>
 
-            <Label fx:id="timeRemaining" text="Czas do następnego etapu">
+            <Label text="Czas do następnego etapu">
                 <VBox.margin><Insets top="120"/></VBox.margin>
             </Label>
-            <Text text="Test text">
+            <Text fx:id="timeRemaining" text="Test text">
                 <font><Font size="28"/></font>
             </Text>
 
-            <Label fx:id="timeElapsed" text="Czas od rozpoczęcia aktualnego etapu">
+            <Label text="Czas od rozpoczęcia aktualnego etapu">
                 <VBox.margin><Insets top="15"/></VBox.margin>
             </Label>
-            <Text text="Test text">
+            <Text fx:id="timeElapsed" text="Test text">
                 <font><Font size="28"/></font>
             </Text>
 

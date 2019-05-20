@@ -9,8 +9,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.TextArea;
 
@@ -21,6 +23,13 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class StoperController implements Initializable {
+    public Button startTimer;
+    public Button stopTimer;
+    public Button nextStage;
+    public Button logButton;
+    public Button showLogs;
+    public Text timeRemaining;
+    public Text timeElapsed;
     private Controller controller = Controller.getInstance();
 
     @FXML
