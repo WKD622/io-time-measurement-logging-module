@@ -41,6 +41,8 @@ public class Main extends Application {
             prod.start();
             AgentController rma = MainContainer.cc.createNewAgent("rma", "jade.tools.rma.rma", null);
             rma.start();
+            AgentController time = MainContainer.cc.createNewAgent("time", "agh.agents.TimeAgent", null);
+            time.start();
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }

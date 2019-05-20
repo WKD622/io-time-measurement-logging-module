@@ -1,5 +1,6 @@
 package agh.agents;
 
+import agh.utils.Agents;
 import agh.utils.LogLevel;
 import jade.core.AID;
 import jade.core.Agent;
@@ -21,6 +22,7 @@ public class UIAgent extends Agent implements InterfaceUI {
     private boolean runProcessFinished = false;
     private boolean learningFinished = false;
     private boolean dbQueryFinished = false;
+    private Agents agent = Agents.UI_AGENT;
 
     public UIAgent() {
         registerO2AInterface(InterfaceUI.class, this);
@@ -124,7 +126,7 @@ public class UIAgent extends Agent implements InterfaceUI {
 
                     case (0):
                         ACLMessage msgProcessInit = new ACLMessage(AgentMessages.START_LEARNING_AGENT);
-                        send(LoggingAgent.prepareLog(LogLevel.INFO, "Started learning agent"));
+                        send(LoggingAgent.prepareLog(LogLevel.INFO, agent,"Started learning agent"));
                         msgProcessInit.setContent("");
                         msgProcessInit.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                         send(msgProcessInit);
@@ -141,7 +143,6 @@ public class UIAgent extends Agent implements InterfaceUI {
 
                     case (2):
                         ACLMessage msgSetValues = new ACLMessage(AgentMessages.START_LEARNING);
-                        send(LoggingAgent.prepareLog(LogLevel.INFO, "Started learning"));
                         msgSetValues.setContent("");
                         msgSetValues.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                         send(msgSetValues);

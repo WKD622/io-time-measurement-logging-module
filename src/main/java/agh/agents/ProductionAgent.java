@@ -1,5 +1,6 @@
 package agh.agents;
 
+import agh.utils.Agents;
 import agh.utils.LogLevel;
 import jade.core.AID;
 import jade.core.Agent;
@@ -18,6 +19,7 @@ public class ProductionAgent extends Agent {
     private ArrayList<AID> processAgents = new ArrayList<>();
     private ArrayList<AID> systemAgents = new ArrayList<>();
     private ArrayList<AID> learningAgents = new ArrayList<>();
+    private Agents agent = Agents.PRODUCTION_AGENT;
 
     private AID createProcess() {
         ContainerController cc = getContainerController();
@@ -89,7 +91,7 @@ public class ProductionAgent extends Agent {
             System.out.println(e.getMessage());
         }
 
-        ACLMessage msg = LoggingAgent.prepareLog(LogLevel.INFO, "Agents initialized");
+        ACLMessage msg = LoggingAgent.prepareLog(LogLevel.INFO, agent,"Agents initialized");
         send(msg);
 
         addBehaviour(new CyclicBehaviour(this) {
@@ -169,7 +171,7 @@ public class ProductionAgent extends Agent {
                                 send(msg);
                                 break;
                             case (AgentMessages.START_LEARNING):
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, "Started learning"));
+                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Started learning"));
                                 sendToLearningAgents(msg, 0, AgentMessages.START_LEARNING_MLP);
                                 sendToLearningAgents(msg, 1, AgentMessages.START_LEARNING_M5P);
                                 sendToLearningAgents(msg, 2, AgentMessages.START_LEARNING_FOREST);
