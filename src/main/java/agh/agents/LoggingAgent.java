@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-public class LoggingAgent extends Agent implements ILogging{
+public class LoggingAgent extends Agent implements ILogging {
 
     private ObservableList<LogMessage> observableList = FXCollections.observableArrayList(new ArrayList<>());
-    private ListProperty<LogMessage> logs = new SimpleListProperty<>(observableList) ;
+    private ListProperty<LogMessage> logs = new SimpleListProperty<>(observableList);
 
     protected void setup() {
         registerO2AInterface(ILogging.class, this);
