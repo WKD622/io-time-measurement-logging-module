@@ -1,1 +1,1 @@
-http://komputer:7778/acc
+http://Vostro-5470:7778/acc

@@ -35,7 +35,6 @@ public class LoggingAgent extends Agent implements ILogging {
                         e.printStackTrace();
                         return;
                     }
-                    System.out.println(message.getLog());
                     logs.add(message);
                 } else {
                     block();
