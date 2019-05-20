@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class StoperController implements Initializable {
     private Controller controller = Controller.getInstance();

@@ -249,7 +249,7 @@ public class TimeAgent extends Agent {
         }
     }
 
-    enum ProcessState {
+    public enum ProcessState {
         START_LEARNING,
         END_LEARNING,
         START_WYTAPIANIE,
