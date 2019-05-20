@@ -1,5 +1,6 @@
 package agh.agents;
 
+import agh.utils.Agents;
 import agh.utils.LogLevel;
 import agh.utils.LogMessage;
 import jade.core.AID;
@@ -44,10 +45,14 @@ public class LoggingAgent extends Agent implements ILogging {
     }
 
     public static ACLMessage prepareLog(LogLevel level, String message) {
-        return prepareLog(level, "", LocalTime.now().toString(), message);
+        return prepareLog(level, Agents.EMPTY, message);
     }
 
-    public static ACLMessage prepareLog(LogLevel level, String agent, String time, String message) {
+    public static ACLMessage prepareLog(LogLevel level, Agents agent, String message) {
+        return prepareLog(level, agent, LocalTime.now().toString(), message);
+    }
+
+    public static ACLMessage prepareLog(LogLevel level, Agents agent, String time, String message) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(new AID("Logging-agent", AID.ISLOCALNAME));
         try {
@@ -62,5 +67,10 @@ public class LoggingAgent extends Agent implements ILogging {
     @Override
     public ListProperty<LogMessage> getLog() {
         return logs;
+    }
+
+    @Override
+    public void sendMessage(LogLevel level, Agents agent, String message) {
+        send(LoggingAgent.prepareLog(level, agent, message));
     }
 }

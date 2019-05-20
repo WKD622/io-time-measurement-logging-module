@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import java.lang.*?>
 <Pane fx:id="LoggerPane"
       prefHeight="660.0" prefWidth="923.0"
       xmlns:fx="http://javafx.com/fxml"
       xmlns="http://javafx.com/javafx"
-      fx:controller="agh.controllers.LoggerController"
->
+      fx:controller="agh.controllers.LoggerController">
     <VBox alignment="CENTER" spacing="20.0" prefWidth="923.0">
         <Label text="Logger">
             <font><Font size="36.0" /></font>
@@ -27,53 +24,22 @@
         <HBox alignment="BASELINE_CENTER">
             <VBox>
                 <Label text="Poziom" />
-                <ChoiceBox fx:id="logLevelFilterBox" onAction="#levelFilterAction" prefWidth="200" value="-">
-                    <!--<items>-->
-                        <!--<FXCollections fx:factory="observableArrayList">-->
-                            <!--<String fx:value="-"/>-->
-                            <!--<String fx:value="Informacje"/>-->
-                            <!--<String fx:value="Ostrzeżenia"/>-->
-                            <!--<String fx:value="Błędy"/>-->
-                        <!--</FXCollections>-->
-                    <!--</items>-->
-                </ChoiceBox>
+                <ChoiceBox fx:id="logLevelFilterBox" onAction="#levelFilterAction" prefWidth="200" value="-"/>
             </VBox>
 
             <Region HBox.hgrow="ALWAYS" />
 
             <VBox>
                 <Label text="Agent" />
-                <ChoiceBox fx:id="agentFilterBox" onAction="#agentFilterAction" prefWidth="200" value="-">
-                    <!--<items>-->
-                        <!--<FXCollections fx:factory="observableArrayList">-->
-                            <!--<String fx:value="-"/>-->
-                            <!--<String fx:value="Agent 1"/>-->
-                            <!--<String fx:value="Agent 2"/>-->
-                            <!--<String fx:value="Agent 3"/>-->
-                        <!--</FXCollections>-->
-                    <!--</items>-->
-                </ChoiceBox>
+                <ChoiceBox fx:id="agentFilterBox" onAction="#agentFilterAction" prefWidth="200" value="-"/>
             </VBox>
 
             <Region HBox.hgrow="ALWAYS" />
-
-            <VBox>
-                <Label text="Mierzony czas" />
-                <ChoiceBox fx:id="timeFilterBox" onAction="#timeFilterAction" prefWidth="200" value="-">
-                    <!--<items>-->
-                        <!--<FXCollections fx:factory="observableArrayList">-->
-                            <!--<String fx:value="-"/>-->
-                            <!--<String fx:value="Rzeczywisty"/>-->
-                            <!--<String fx:value="Procesora"/>-->
-                            <!--<String fx:value="Użytkownika"/>-->
-                        <!--</FXCollections>-->
-                    <!--</items>-->
-                </ChoiceBox>
-            </VBox>
         </HBox>
-        <TextArea VBox.vgrow="ALWAYS" fx:id="logWindow" editable="false"/>
+        <TableView fx:id="tableView" />
+
         <HBox alignment="BASELINE_RIGHT">
-            <Button prefHeight="38.0" text="Zapisz do pliku"/>
+            <Button prefHeight="38.0" text="Zapisz do pliku" onAction="#handleSave" />
         </HBox>
     </VBox>
 </Pane>
