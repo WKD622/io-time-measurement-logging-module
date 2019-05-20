@@ -3,13 +3,14 @@ package agh.agents;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import javafx.beans.property.SimpleStringProperty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class TimeAgent extends Agent {
     private List<Stoper> stopers = new ArrayList<>();
-    private SimpleStringProperty times = new SimpleStringProperty("");
     private RealTimeStoper stoperWytapianie = new RealTimeStoper(StoperType.WATAPIANIE);
     private RealTimeStoper stoperKrzepiniecie = new RealTimeStoper(StoperType.KRZEPNIECIE);
     private RealTimeStoper stoperStudzenie1 = new RealTimeStoper(StoperType.STUDZENIE1);
@@ -18,12 +19,13 @@ public class TimeAgent extends Agent {
     private RealTimeStoper stoperPodgrzanie2 = new RealTimeStoper(StoperType.PODGRZANIE2);
     private RealTimeStoper stoperUszlachetnianie = new RealTimeStoper(StoperType.USZLACHETNIANIE);
     private CpuTimeStoper stoperLearning = new CpuTimeStoper(StoperType.LEARNING);
+    private HashMap<StoperType, Double> times = new HashMap<>();
 
     public TimeAgent() {
         this.stopers.addAll(Arrays.asList(stoperWytapianie, stoperKrzepiniecie, stoperStudzenie1, stoperPodgrzanie1, stoperStudzenie2, stoperPodgrzanie2, stoperUszlachetnianie, stoperLearning));
     }
 
-    public SimpleStringProperty getLog() {
+    public HashMap getLog() {
         return times;
     }
 
@@ -36,13 +38,11 @@ public class TimeAgent extends Agent {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                StringBuilder sb = new StringBuilder();
                 for (Stoper stoper : stopers) {
                     if (stoper.isMeasuring() || stoper.isEnded()) {
-                        sb.append(stoper.getType()).append("##").append(stoper.getTimePassed()).append("%%");
+                        times.put(stoper.getType(), stoper.getTimePassed());
                     }
                 }
-                times.setValue(sb.toString());
             }
         });
 
@@ -79,59 +79,50 @@ public class TimeAgent extends Agent {
                 this.stoperUszlachetnianie.start();
             }
         } else if (message.contains("END")) {
-            StringBuilder sb = new StringBuilder();
             if (message.contains(ProcessState.END_WYTAPIANIE.toString())) {
                 this.stoperWytapianie.stop();
-                sb.append(this.stoperWytapianie.getType()).append("##").append(this.stoperWytapianie.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperWytapianie.getType(), this.stoperWytapianie.getMeasurement());
             } else if (message.contains(ProcessState.END_KRZEPNIECIE.toString())) {
                 this.stoperKrzepiniecie.stop();
-                sb.append(this.stoperKrzepiniecie.getType()).append("##").append(this.stoperKrzepiniecie.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperKrzepiniecie.getType(), this.stoperKrzepiniecie.getMeasurement());
             } else if (message.contains(ProcessState.END_STUDZENIE_1.toString())) {
                 this.stoperStudzenie1.stop();
-                sb.append(this.stoperStudzenie1.getType()).append("##").append(this.stoperStudzenie1.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperStudzenie1.getType(), this.stoperStudzenie1.getMeasurement());
             } else if (message.contains(ProcessState.END_PODGRZANIE_1.toString())) {
                 this.stoperPodgrzanie1.stop();
-                sb.append(this.stoperPodgrzanie1.getType()).append("##").append(this.stoperPodgrzanie1.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperPodgrzanie1.getType(), this.stoperPodgrzanie1.getMeasurement());
             } else if (message.contains(ProcessState.END_STUDZENIE_2.toString())) {
                 this.stoperStudzenie2.stop();
-                sb.append(this.stoperStudzenie2.getType()).append("##").append(this.stoperStudzenie2.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperStudzenie2.getType(), this.stoperStudzenie2.getMeasurement());
             } else if (message.contains(ProcessState.END_PODGRZANIE_2.toString())) {
                 this.stoperPodgrzanie2.stop();
-                sb.append(this.stoperPodgrzanie2.getType()).append("##").append(this.stoperPodgrzanie2.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperPodgrzanie2.getType(), this.stoperPodgrzanie2.getMeasurement());
             } else if (message.contains(ProcessState.END_USZLACHETNIANIE.toString())) {
                 this.stoperUszlachetnianie.stop();
-                sb.append(this.stoperUszlachetnianie.getType()).append("##").append(this.stoperUszlachetnianie.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperUszlachetnianie.getType(), this.stoperUszlachetnianie.getMeasurement());
             } else if (message.contains(ProcessState.END_LEARNING.toString())) {
                 this.stoperLearning.stop();
-                sb.append(this.stoperLearning.getType()).append("##").append(this.stoperLearning.getMeasurement()).append("%%");
-                times.setValue(sb.toString());
+                times.put(this.stoperLearning.getType(), this.stoperLearning.getMeasurement());
             }
         }
     }
 
     interface Stoper {
-        public StoperType getType();
+        StoperType getType();
 
-        public void start();
+        void start();
 
-        public double getTimePassed();
+        double getTimePassed();
 
-        public boolean isMeasuring();
+        boolean isMeasuring();
 
-        public boolean isEnded();
+        boolean isEnded();
 
-        public void stop();
+        void stop();
 
-        public double getMeasurement();
+        double getMeasurement();
 
-        public void reset();
+        void reset();
     }
 
     class RealTimeStoper implements Stoper {
@@ -286,53 +277,5 @@ public class TimeAgent extends Agent {
         PODGRZANIE2,
         STUDZENIE2,
         USZLACHETNIANIE,
-    }
-
-    public static class MeasuredTimesParser {
-        private Map<StoperType, Double> stopers;
-        private String times;
-
-        public MeasuredTimesParser(SimpleStringProperty times) {
-            this.times = times.getValue();
-            this.stopers = new HashMap<>();
-            parse();
-        }
-
-        private void parse() {
-            List<String> timesList = Arrays.asList(times.split("%%"));
-            for (String stoper : timesList) {
-                String stoperType = stoper.split("##")[0];
-                String time = stoper.split("##")[1];
-                if (stoperType.contains(StoperType.LEARNING.toString())) {
-                    this.stopers.put(StoperType.LEARNING, Double.parseDouble(time));
-                } else if (stoperType.contains(StoperType.WATAPIANIE.toString())) {
-                    this.stopers.put(StoperType.WATAPIANIE, Double.parseDouble(time));
-                } else if (stoperType.contains(StoperType.KRZEPNIECIE.toString())) {
-                    this.stopers.put(StoperType.KRZEPNIECIE, Double.parseDouble(time));
-                } else if (stoperType.contains(StoperType.STUDZENIE1.toString())) {
-                    this.stopers.put(StoperType.STUDZENIE1, Double.parseDouble(time));
-                } else if (stoperType.contains(StoperType.PODGRZANIE1.toString())) {
-                    this.stopers.put(StoperType.PODGRZANIE1, Double.parseDouble(time));
-                } else if (stoperType.contains(StoperType.STUDZENIE2.toString())) {
-                    this.stopers.put(StoperType.STUDZENIE2, Double.parseDouble(time));
-                } else if (stoperType.contains(StoperType.PODGRZANIE2.toString())) {
-                    this.stopers.put(StoperType.PODGRZANIE2, Double.parseDouble(time));
-                } else if (stoperType.contains(StoperType.USZLACHETNIANIE.toString())) {
-                    this.stopers.put(StoperType.USZLACHETNIANIE, Double.parseDouble(time));
-                }
-            }
-        }
-
-        public boolean containsStoper(StoperType stoperType) {
-            return this.stopers.containsKey(stoperType);
-        }
-
-        public Set<StoperType> allContainedStopers() {
-            return this.stopers.keySet();
-        }
-
-        public double getTimeForStoper(StoperType stoperType) {
-            return this.stopers.get(stoperType);
-        }
     }
 }
