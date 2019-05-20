@@ -37,15 +37,15 @@
             <Region VBox.vgrow="ALWAYS" />
 
             <HBox spacing="20">
-                <Button prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
-                <Button prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="startTimer" prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="stopTimer" prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
                 <Region HBox.hgrow="ALWAYS" />
-                <Button prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="nextStage" prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
             </HBox>
         </VBox>
 
         <VBox prefWidth="410.0">
-            <Label text="Logowanie:">
+            <Label fx:id="logText" text="Logowanie:">
                 <VBox.margin><Insets bottom="5"/></VBox.margin>
             </Label>
             <TextField fx:id="logField" editable="true" />
@@ -53,17 +53,17 @@
                 <VBox.margin><Insets top="10" /></VBox.margin>
                 <Button prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="showLogs" prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
             </HBox>
 
-            <Label text="Czas do następnego etapu">
+            <Label fx:id="timeRemaining" text="Czas do następnego etapu">
                 <VBox.margin><Insets top="120"/></VBox.margin>
             </Label>
             <Text text="Test text">
                 <font><Font size="28"/></font>
             </Text>
 
-            <Label text="Czas do następnego etapu">
+            <Label fx:id="timeElapsed" text="Czas od rozpoczęcia aktualnego etapu">
                 <VBox.margin><Insets top="15"/></VBox.margin>
             </Label>
             <Text text="Test text">

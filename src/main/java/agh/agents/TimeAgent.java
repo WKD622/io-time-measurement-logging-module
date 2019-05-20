@@ -25,7 +25,7 @@ public class TimeAgent extends Agent {
         this.stopers.addAll(Arrays.asList(stoperWytapianie, stoperKrzepiniecie, stoperStudzenie1, stoperPodgrzanie1, stoperStudzenie2, stoperPodgrzanie2, stoperUszlachetnianie, stoperLearning));
     }
 
-    public HashMap getLog() {
+    public HashMap<StoperType, Double> getLog() {
         return times;
     }
 
@@ -268,7 +268,7 @@ public class TimeAgent extends Agent {
         END_USZLACHETNIANIE,
     }
 
-    enum StoperType {
+    public enum StoperType {
         LEARNING,
         WATAPIANIE,
         KRZEPNIECIE,
