@@ -5,4 +5,5 @@ import javafx.beans.property.ListProperty;
 
 public interface ILogging {
     ListProperty<LogMessage> getLog();
+
 }

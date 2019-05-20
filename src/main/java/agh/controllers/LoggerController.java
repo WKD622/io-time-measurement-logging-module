@@ -18,6 +18,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -69,6 +71,25 @@ public class LoggerController implements Initializable {
     @FXML
     void agentFilterAction(ActionEvent event) { updateFiltering(); }
 
+    @FXML
+    void handleSave(ActionEvent event) {
+        try{
+            FileWriter fw = new FileWriter("logs.txt");
+            list.forEach(e -> saveLine(fw, e.getMessage()));
+            fw.close();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void saveLine(FileWriter fw, String text){
+        try {
+            fw.write(text + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @SuppressWarnings("unchecked")
     private void loadTable(){
