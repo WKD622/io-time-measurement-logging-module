@@ -56,19 +56,19 @@
                 <Button prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
             </HBox>
 
-            <Label text="Czas do następnego etapu">
+            <Label text="Czas od rozpoczęcia etapu">
                 <VBox.margin><Insets top="120"/></VBox.margin>
             </Label>
-            <Text text="Test text">
+            <Text text="2min 10s">
                 <font><Font size="28"/></font>
             </Text>
 
-            <Label text="Czas do następnego etapu">
-                <VBox.margin><Insets top="15"/></VBox.margin>
-            </Label>
-            <Text text="Test text">
-                <font><Font size="28"/></font>
-            </Text>
+            <!--<Label text="Czas do następnego etapu">-->
+                <!--<VBox.margin><Insets top="15"/></VBox.margin>-->
+            <!--</Label>-->
+            <!--<Text text="Test text">-->
+                <!--<font><Font size="28"/></font>-->
+            <!--</Text>-->
 
             <Region VBox.vgrow="ALWAYS"/>
 
