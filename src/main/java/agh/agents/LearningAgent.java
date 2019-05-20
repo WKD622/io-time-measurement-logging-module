@@ -1,6 +1,7 @@
 package agh.agents;
 
 import agh.classification.ProductionData;
+import agh.utils.Agents;
 import agh.utils.LogLevel;
 import jade.core.AID;
 import jade.core.Agent;
@@ -16,6 +17,7 @@ import static agh.Main.productionData;
 public class LearningAgent extends Agent {
 
     private Classifier[] classififiers = new Classifier[]{productionData.getMlp(), productionData.getForest(), productionData.getM5p(), productionData.getVote()};
+    private Agents agent = Agents.LEARNING_AGENT;
 
     protected void setup() {
         Object[] args = getArguments();
@@ -50,7 +52,7 @@ public class LearningAgent extends Agent {
                                 productionData.train("TrainingData.arff", classififiers[0]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_MLP_ACK);
                                 System.out.println("Training mlp done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, "Training mlp done"));
+                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training mlp done"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
@@ -60,7 +62,7 @@ public class LearningAgent extends Agent {
                                 productionData.train("TrainingData.arff", classififiers[2]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_M5P_ACK);
                                 System.out.println("Training m5p done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, "Training m5p done"));
+                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent,"Training m5p done"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
@@ -70,7 +72,7 @@ public class LearningAgent extends Agent {
                                 productionData.train("TrainingData.arff", classififiers[1]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_FOREST_ACK);
                                 System.out.println("Training forest done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, "Training forest done"));
+                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent,"Training forest done"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
@@ -80,7 +82,7 @@ public class LearningAgent extends Agent {
                                 productionData.train("TrainingData.arff", classififiers[3]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_VOTE_ACK);
                                 System.out.println("Training vote done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, "Training vote done"));
+                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent,"Training vote done"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
