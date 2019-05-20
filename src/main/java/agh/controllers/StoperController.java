@@ -13,6 +13,8 @@ import javafx.scene.control.TextArea;
 
 import java.net.URL;
 import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class StoperController implements Initializable {
@@ -31,20 +33,16 @@ public class StoperController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         TimeAgent timeAgent = new TimeAgent();
         timeAgent.setup();
-        SimpleStringProperty stopers;
+        HashMap times = timeAgent.getLog();
         while (true) {
-            stopers = timeAgent.getLog();
-            TimeAgent.MeasuredTimesParser measuredTimesParser = new TimeAgent.MeasuredTimesParser(stopers);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Set<TimeAgent.StoperType> stopersSet = measuredTimesParser.allContainedStopers();
-            for (TimeAgent.StoperType stoperType : new ArrayDeque<>(stopersSet)) {
-                Double time = measuredTimesParser.getTimeForStoper(stoperType);
+            for (Object key: times.keySet()) {
+                System.out.println(key + ": " + times.get(key));
             }
-
         }
     }
 
