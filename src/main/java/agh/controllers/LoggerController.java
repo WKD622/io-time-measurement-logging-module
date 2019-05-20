@@ -27,18 +27,13 @@ public class LoggerController implements Initializable {
 
     @FXML
     private Pane LoggerPane;
-    //    @FXML
-//    private TextArea logWindow;
     @FXML
     private TableView<LogMessage> tableView;
-
     @FXML
     private ChoiceBox<FilterItem> logLevelFilterBox;
     @FXML
     private ChoiceBox<FilterItem> agentFilterBox;
-    @FXML
-    private ChoiceBox<FilterItem> timeFilterBox;
-    @FXML
+
     private FilteredList<LogMessage> list;
 
     @Override
@@ -69,17 +64,11 @@ public class LoggerController implements Initializable {
     }
 
     @FXML
-    void levelFilterAction(ActionEvent event) {
-        updateFiltering();
-    }
+    void levelFilterAction(ActionEvent event) { updateFiltering(); }
 
     @FXML
     void agentFilterAction(ActionEvent event) { updateFiltering(); }
 
-    @FXML
-    void timeFilterAction(ActionEvent event) {
-        updateFiltering();
-    }
 
     @SuppressWarnings("unchecked")
     private void loadTable(){
@@ -97,26 +86,21 @@ public class LoggerController implements Initializable {
 
     private void loadFilters(){
         loading = true;
-        for (LogLevelFilters filter : LogLevelFilters.values()) {
-            logLevelFilterBox.getItems().add(new FilterItem<LogLevelFilters>(filter, filter.toString()));
+        for (LogLevel filter : LogLevel.values()) {
+            logLevelFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
         }
 
         for (Agents filter : Agents.values()) {
-            agentFilterBox.getItems().add(new FilterItem<Agents>(filter, filter.toString()));
+            agentFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
         }
 
-        for (TimeFilters filter : TimeFilters.values()) {
-            timeFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
-        }
-
-        timeFilterBox.getSelectionModel().selectFirst();
         agentFilterBox.getSelectionModel().selectFirst();
         logLevelFilterBox.getSelectionModel().selectFirst();
         loading = false;
     }
 
     private boolean levelPredicate(LogMessage m) {
-        if(logLevelFilterBox.getValue().key == LogLevelFilters.EMPTY)
+        if(logLevelFilterBox.getValue().key == LogLevel.EMPTY)
             return true;
         else
             return m.getLevel().equals(logLevelFilterBox.getValue().key);
@@ -127,17 +111,11 @@ public class LoggerController implements Initializable {
         else
             return m.getAgent().equals(agentFilterBox.getValue().key);
     }
-    private boolean timePredicate(LogMessage m) {
-        if(timeFilterBox.getValue().key == TimeFilters.EMPTY)
-            return true;
-        else
-            return m.getTime().equals(timeFilterBox.getValue().key);
-    }
 
 
     private void updateFiltering(){
         if(loading)
             return;
-        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) /*  && timePredicate(s) */);
+        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) );
     }
 }

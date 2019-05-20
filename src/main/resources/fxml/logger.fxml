@@ -35,11 +35,6 @@
             </VBox>
 
             <Region HBox.hgrow="ALWAYS" />
-
-            <VBox>
-                <Label text="Mierzony czas" />
-                <ChoiceBox fx:id="timeFilterBox" onAction="#timeFilterAction" prefWidth="200" value="-"/>
-            </VBox>
         </HBox>
         <TableView fx:id="tableView" />
 

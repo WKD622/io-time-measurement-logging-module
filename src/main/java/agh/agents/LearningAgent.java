@@ -1,6 +1,5 @@
 package agh.agents;
 
-import agh.classification.ProductionData;
 import agh.utils.Agents;
 import agh.utils.LogLevel;
 import jade.core.AID;
@@ -48,41 +47,37 @@ public class LearningAgent extends Agent {
                                 send(reply);
                                 break;
                             case (AgentMessages.START_LEARNING_MLP):
-                                System.out.println("Training mlp in agent");
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training mlp start"));
                                 productionData.train("TrainingData.arff", classififiers[0]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_MLP_ACK);
-                                System.out.println("Training mlp done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training mlp done"));
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training mlp end"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
                                 break;
                             case (AgentMessages.START_LEARNING_M5P):
-                                System.out.println("Training m5p in agent");
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training m5p start"));
                                 productionData.train("TrainingData.arff", classififiers[2]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_M5P_ACK);
-                                System.out.println("Training m5p done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent,"Training m5p done"));
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent,"Training m5p end"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
                                 break;
                             case (AgentMessages.START_LEARNING_FOREST):
-                                System.out.println("Training forest in agent");
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training forest start"));
                                 productionData.train("TrainingData.arff", classififiers[1]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_FOREST_ACK);
-                                System.out.println("Training forest done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent,"Training forest done"));
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent,"Training forest end"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
                                 break;
                             case (AgentMessages.START_LEARNING_VOTE):
-                                System.out.println("Training vote in agent");
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training vote start"));
                                 productionData.train("TrainingData.arff", classififiers[3]);
                                 reply = new ACLMessage(AgentMessages.START_LEARNING_VOTE_ACK);
-                                System.out.println("Training vote done");
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent,"Training vote done"));
+                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent,"Training vote end"));
                                 reply.setContent("success ");
                                 reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
                                 send(reply);
@@ -90,7 +85,6 @@ public class LearningAgent extends Agent {
                         }
                     }
                 }
-
                 block();
             }
         });
