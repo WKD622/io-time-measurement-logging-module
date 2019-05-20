@@ -32,10 +32,10 @@
             <Region VBox.vgrow="ALWAYS" />
 
             <HBox spacing="20">
-                <Button prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
-                <Button prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="startTimer" prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="stopTimer" prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
                 <Region HBox.hgrow="ALWAYS" />
-                <Button prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="nextStage" prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
             </HBox>
         </VBox>
 
@@ -46,22 +46,22 @@
             <TextField fx:id="logField" editable="true" />
             <HBox>
                 <VBox.margin><Insets top="10" /></VBox.margin>
-                <Button prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="logButton" prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="showLogs" onAction="#handleShowLogs" prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
             </HBox>
 
             <Label text="Czas do następnego etapu">
                 <VBox.margin><Insets top="120"/></VBox.margin>
             </Label>
-            <Text text="Test text">
+            <Text fx:id="timeRemaining" text="Test text">
                 <font><Font size="28"/></font>
             </Text>
 
-            <Label text="Czas do następnego etapu">
+            <Label text="Czas od rozpoczęcia aktualnego etapu">
                 <VBox.margin><Insets top="15"/></VBox.margin>
             </Label>
-            <Text text="Test text">
+            <Text fx:id="timeElapsed" text="Test text">
                 <font><Font size="28"/></font>
             </Text>
 
