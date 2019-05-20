@@ -68,4 +68,9 @@ public class LoggingAgent extends Agent implements ILogging {
     public ListProperty<LogMessage> getLog() {
         return logs;
     }
+
+    @Override
+    public void sendMessage(LogLevel level, Agents agent, String message) {
+        send(LoggingAgent.prepareLog(level, agent, message));
+    }
 }
