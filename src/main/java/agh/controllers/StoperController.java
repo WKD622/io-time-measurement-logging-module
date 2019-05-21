@@ -34,16 +34,16 @@ public class StoperController implements Initializable {
         TimeAgent timeAgent = new TimeAgent();
         timeAgent.setup();
         HashMap times = timeAgent.getLog();
-        while (true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            for (Object key: times.keySet()) {
-                System.out.println(key + ": " + times.get(key));
-            }
-        }
+//        while (true) {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            for (Object key: times.keySet()) {
+//                System.out.println(key + ": " + times.get(key));
+//            }
+//        }
     }
 
     public void setScene(Stage stage, Parent root) {
