@@ -219,11 +219,9 @@ public class ProductionAgent extends Agent {
 
     }
     private void sendToLearningAgents(ACLMessage msg, int i, int agentMsg){
-        System.out.println("sending msg to agent " + i);
         msg = new ACLMessage(agentMsg);
         msg.addReceiver(learningAgents.get(learningAgents.size() - 1 - i));
         msg.setContent("");
         send(msg);
-        System.out.println("msg sent to agent " + i);
     }
 }

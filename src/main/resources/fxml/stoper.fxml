@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Text?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 <AnchorPane fx:id="stoperPane"
             fx:controller="agh.controllers.StoperController"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            prefHeight="660.0" prefWidth="923.0"
->
+            prefHeight="660.0" prefWidth="923.0">
     <Button AnchorPane.leftAnchor="40.0"
             AnchorPane.topAnchor="20.0"
             onAction="#handleBack"
@@ -37,10 +32,10 @@
             <Region VBox.vgrow="ALWAYS" />
 
             <HBox spacing="20">
-                <Button prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
-                <Button prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="startTimer" prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="stopTimer" prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
                 <Region HBox.hgrow="ALWAYS" />
-                <Button prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="nextStage" prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
             </HBox>
         </VBox>
 
@@ -51,22 +46,22 @@
             <TextField fx:id="logField" editable="true" />
             <HBox>
                 <VBox.margin><Insets top="10" /></VBox.margin>
-                <Button prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="logButton" prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="showLogs" onAction="#handleShowLogs" prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
             </HBox>
 
             <Label text="Czas do następnego etapu">
                 <VBox.margin><Insets top="120"/></VBox.margin>
             </Label>
-            <Text text="Test text">
+            <Text fx:id="timeRemaining" text="Test text">
                 <font><Font size="28"/></font>
             </Text>
 
-            <Label text="Czas do następnego etapu">
+            <Label text="Czas od rozpoczęcia aktualnego etapu">
                 <VBox.margin><Insets top="15"/></VBox.margin>
             </Label>
-            <Text text="Test text">
+            <Text fx:id="timeElapsed" text="Test text">
                 <font><Font size="28"/></font>
             </Text>
 

@@ -35,7 +35,6 @@ public class LoggingAgent extends Agent implements ILogging {
                         e.printStackTrace();
                         return;
                     }
-                    System.out.println(message.getLog());
                     logs.add(message);
                 } else {
                     block();
@@ -67,5 +66,10 @@ public class LoggingAgent extends Agent implements ILogging {
     @Override
     public ListProperty<LogMessage> getLog() {
         return logs;
+    }
+
+    @Override
+    public void sendMessage(LogLevel level, Agents agent, String message) {
+        send(LoggingAgent.prepareLog(level, agent, message));
     }
 }

@@ -18,12 +18,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoggerController implements Initializable {
     private Controller controller = Controller.getInstance();
     private boolean loading = false;
+    private String LOG_FILENAME = "logs.txt";
 
     @FXML
     private Pane LoggerPane;
@@ -64,11 +67,29 @@ public class LoggerController implements Initializable {
     }
 
     @FXML
-    void levelFilterAction(ActionEvent event) { updateFiltering(); }
+    void levelFilterAction(ActionEvent _event) { updateFiltering(); }
 
     @FXML
-    void agentFilterAction(ActionEvent event) { updateFiltering(); }
+    void agentFilterAction(ActionEvent _event) { updateFiltering(); }
 
+    @FXML
+    void handleSave(ActionEvent _event) {
+        try{
+            FileWriter fw = new FileWriter(LOG_FILENAME);
+            list.forEach(e -> saveLine(fw, e.getLog()));
+            fw.close();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void saveLine(FileWriter fw, String text){
+        try {
+            fw.write(text + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @SuppressWarnings("unchecked")
     private void loadTable(){
@@ -105,13 +126,13 @@ public class LoggerController implements Initializable {
         else
             return m.getLevel().equals(logLevelFilterBox.getValue().key);
     }
+
     private boolean agentPredicate(LogMessage m) {
         if(agentFilterBox.getValue().key == Agents.EMPTY)
             return true;
         else
             return m.getAgent().equals(agentFilterBox.getValue().key);
     }
-
 
     private void updateFiltering(){
         if(loading)
