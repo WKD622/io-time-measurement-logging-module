@@ -46,24 +46,24 @@ public class StoperController implements Initializable {
         TimeAgent timeAgent = new TimeAgent();
         timeAgent.setup();
 
-        Thread T = new Thread(() -> {
-            HashMap<TimeAgent.StoperType, Double> stopers = new HashMap<>();
+//        Thread T = new Thread(() -> {
+//            HashMap<TimeAgent.StoperType, Double> stopers = new HashMap<>();
+//
+//            while (true) {
+//                try {
+//                    while (true) {
+////                        stopers = timeAgent.getLog();
+//                        System.out.println(timeAgent.getLog());
+////                        System.out.println(stopers.toString());
+//                        Thread.sleep(5000);
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
-            while (true) {
-                try {
-                    while (true) {
-//                        stopers = timeAgent.getLog();
-                        System.out.println(timeAgent.getLog());
-//                        System.out.println(stopers.toString());
-                        Thread.sleep(5000);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        T.start();
+//        T.start();
 //        addBehaviour(new CyclicBehaviour(this) {
 //            public void action() {
 //                ACLMessage msg = myAgent.receive();
