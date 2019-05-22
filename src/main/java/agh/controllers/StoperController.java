@@ -4,6 +4,7 @@ import agh.agents.TimeAgent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,11 +19,12 @@ import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayDeque;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class StoperController implements Initializable {
+
     public Button startTimer;
     public Button stopTimer;
     public Button nextStage;
@@ -30,8 +32,12 @@ public class StoperController implements Initializable {
     public Button showLogs;
     public Text timeRemaining;
     public Text timeElapsed;
+    public Button quit;
     private Controller controller = Controller.getInstance();
 
+    private Map<String, String> parameters;
+
+    //
     @FXML
     public AnchorPane stoperPane;
     @FXML
@@ -101,6 +107,16 @@ public class StoperController implements Initializable {
         }
     }
 
+    public void setProductionParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+        final String text = parameters.entrySet()
+                .stream()
+                .map(e -> e.getKey() + ": " + e.getValue())
+                .collect(Collectors.joining("\n"));
+        parametersTextArea.setText(text);
+//        System.out.println(this.parameters);
+    }
+
     public void setScene(Stage stage, Parent root) {
         stage.setTitle("Stoper");
         stage.setScene(new Scene(root));
@@ -110,5 +126,20 @@ public class StoperController implements Initializable {
     @FXML
     public void handleBack() {
         controller.handleBack(stoperPane);
+    }
+
+    public void handleStartTimer(ActionEvent actionEvent) {
+    }
+
+    public void handleStopTimer(ActionEvent actionEvent) {
+    }
+
+    public void handleNextStage(ActionEvent actionEvent) {
+    }
+
+    public void handleQuit(ActionEvent actionEvent) {
+    }
+
+    public void handleLog(ActionEvent actionEvent) {
     }
 }

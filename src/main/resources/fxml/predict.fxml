@@ -50,19 +50,19 @@
                                 <Font size="18.0" />
                             </font>
                         </Label>
-                        <Label layoutX="59.0" layoutY="243.0" text="Temperatura wytapiania" />
+                        <Label fx:id="tempLabel" layoutX="59.0" layoutY="243.0" text="Temperatura wytapiania" />
                         <TextField fx:id="temp" layoutX="231.0" layoutY="239.0" prefWidth="60.0" />
-                        <Label layoutX="72.0" layoutY="283.0" text="Czas wytapiania" />
+                        <Label fx:id="timeLabel" layoutX="72.0" layoutY="283.0" text="Czas wytapiania" />
                         <TextField fx:id="time" layoutX="231.0" layoutY="278.0" prefWidth="60.0" />
-                        <Label layoutX="311.0" layoutY="243.0" text="Temperatura studzenia I" />
+                        <Label fx:id="temp1Label" layoutX="311.0" layoutY="243.0" text="Temperatura studzenia I" />
                         <TextField fx:id="temp1" layoutX="483.0" layoutY="239.0" prefWidth="60.0" />
-                        <Label layoutX="320.0" layoutY="283.0" text="Czas podgrzewania I" />
+                        <Label fx:id="time1Label" layoutX="320.0" layoutY="283.0" text="Czas podgrzewania I" />
                         <TextField fx:id="time1" layoutX="483.0" layoutY="279.0" prefWidth="60.0" />
-                        <Label layoutX="569.0" layoutY="243.0" text="Temperatura studzenia II" />
+                        <Label fx:id="temp2Label" layoutX="569.0" layoutY="243.0" text="Temperatura studzenia II" />
                         <TextField fx:id="temp2" layoutX="740.0" layoutY="239.0" prefWidth="60.0" />
-                        <Label layoutX="579.0" layoutY="282.0" text="Czas podgrzewania II" />
+                        <Label fx:id="time2Label" layoutX="579.0" layoutY="282.0" text="Czas podgrzewania II" />
                         <TextField fx:id="time2" layoutX="740.0" layoutY="278.0" prefWidth="60.0" />
-                        <Label layoutX="83.0" layoutY="322.0" text="Masa stopu" />
+                        <Label fx:id="massLabel" layoutX="83.0" layoutY="322.0" text="Masa stopu" />
                         <TextField fx:id="mass" layoutX="231.0" layoutY="318.0" prefWidth="60.0" />
                         <Label layoutX="421.0" layoutY="322.0" text="Stopień uszlachetniania" />
                         <ChoiceBox fx:id="upgrades" layoutX="616.0" layoutY="318.0" prefHeight="25.0" prefWidth="185.0" />

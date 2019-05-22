@@ -32,10 +32,10 @@
             <Region VBox.vgrow="ALWAYS" />
 
             <HBox spacing="20">
-                <Button fx:id="startTimer" prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
-                <Button fx:id="stopTimer" prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="startTimer" onAction="#handleStartTimer" prefHeight="38.0" text="Rozpocznij" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="stopTimer" onAction="#handleStopTimer" prefHeight="38.0" text="Zatrzymaj" textAlignment="CENTER" wrapText="true"/>
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="nextStage" prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
+                <Button fx:id="nextStage" onAction="#handleNextStage" prefHeight="38.0" text="Następny" textAlignment="CENTER" wrapText="true"/>
             </HBox>
         </VBox>
 
@@ -46,7 +46,7 @@
             <TextField fx:id="logField" editable="true" />
             <HBox>
                 <VBox.margin><Insets top="10" /></VBox.margin>
-                <Button fx:id="logButton" prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="logButton" onAction="#handleLog" prefHeight="38" text="Loguj" textAlignment="CENTER" wrapText="true" />
                 <Region HBox.hgrow="ALWAYS" />
                 <Button fx:id="showLogs" onAction="#handleShowLogs" prefHeight="38" text="Pokaż logi" textAlignment="CENTER" wrapText="true" />
             </HBox>
@@ -68,7 +68,7 @@
             <Region VBox.vgrow="ALWAYS"/>
 
             <HBox alignment="CENTER_RIGHT">
-                <Button prefHeight="38" text="Zakończ" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="quit" onAction="#handleQuit" prefHeight="38" text="Zakończ" textAlignment="CENTER" wrapText="true" />
             </HBox>
         </VBox>
     </HBox>

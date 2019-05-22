@@ -28,6 +28,14 @@ import java.util.ResourceBundle;
 
 public class PredictController implements Initializable {
 
+    public Label tempLabel;
+    public Label timeLabel;
+    public Label temp1Label;
+    public Label time1Label;
+    public Label temp2Label;
+    public Label time2Label;
+    public Label massLabel;
+
     private Controller controller = Controller.getInstance();
     private Map<Integer, int[]> metalsMap = new HashMap<>();
     private TextField[] metalsArray;
@@ -130,6 +138,18 @@ public class PredictController implements Initializable {
         quality.setText(results[2]);
     }
 
+    private Map<String, String> prepareParameters() {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(tempLabel.getText(), temp.getText());
+        parameters.put(timeLabel.getText(), time.getText());
+        parameters.put(temp1Label.getText(), temp1.getText());
+        parameters.put(time1Label.getText(), time1.getText());
+        parameters.put(temp2Label.getText(), temp2.getText());
+        parameters.put(time2Label.getText(), time2.getText());
+        parameters.put(massLabel.getText(), mass.getText());
+        return parameters;
+    }
+
     @FXML
     void handleShowStoper() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stoper.fxml"));
@@ -138,6 +158,7 @@ public class PredictController implements Initializable {
             root = loader.load();
             StoperController controller = loader.getController();
             controller.setScene((Stage) PredictPane.getScene().getWindow(), root);
+            controller.setProductionParameters(prepareParameters());
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
