@@ -1,6 +1,8 @@
 package agh.agents;
 
 public interface ITime {
-    void startTimer(TimeAgent.StoperType timer);
-    void stopTimer(TimeAgent.StoperType timer);
+    void start(TimeAgent.ProductionStage stage);
+    void stop(TimeAgent.ProductionStage stage);
+    void reset(TimeAgent.ProductionStage stage);
+    boolean isMeasuring(TimeAgent.ProductionStage stage);
 }

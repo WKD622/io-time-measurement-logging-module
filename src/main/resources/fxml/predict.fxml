@@ -91,7 +91,7 @@
                         </Label>
                         <TextField fx:id="cost" editable="false" layoutX="334.0" layoutY="450.0" prefHeight="27.0" prefWidth="122.0" />
                         <Button layoutX="315.0" layoutY="503.0" mnemonicParsing="false" onAction="#handlePrediction" prefHeight="50.0" prefWidth="160.0" text="Pokaż wynik" />
-                        <Button layoutX="345.0" layoutY="578.0" mnemonicParsing="false" onAction="#handleShowStoper" prefHeight="50.0" prefWidth="100.0" text="Pokaż stoper" textAlignment="CENTER" wrapText="true" />
+                        <Button layoutX="345.0" layoutY="578.0" mnemonicParsing="false" onAction="#handleShowStopwatch" prefHeight="50.0" prefWidth="100.0" text="Pokaż stoper" textAlignment="CENTER" wrapText="true" />
 
 
                         <Label layoutX="687.0" layoutY="401.0" text="Wsad">

@@ -6,7 +6,7 @@ public enum Agents {
     PROCESS_AGENT("Agent procesu"),
     PRODUCTION_AGENT("Agent produkcji"),
     UI_AGENT("Agent UI"),
-    TIME_AGENT("Agent pomiaru czasu");
+    USER("Użytkownik");
 
     private String displayName;
     Agents(String displayName) {

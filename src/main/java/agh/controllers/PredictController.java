@@ -148,33 +148,33 @@ public class PredictController implements Initializable {
         return parameters;
     }
 
-    private Map<TimeAgent.StoperType, Long> prepareStages() {
-        Map<TimeAgent.StoperType, Long> timers = new HashMap<>();
-        timers.put(TimeAgent.StoperType.WATAPIANIE, parseTime(time.getText()));
-        timers.put(TimeAgent.StoperType.PODGRZANIE1, parseTime(time1.getText()));
-        timers.put(TimeAgent.StoperType.PODGRZANIE2, parseTime(time2.getText()));
+    private Map<TimeAgent.ProductionStage, Long> prepareStages() {
+        Map<TimeAgent.ProductionStage, Long> timers = new HashMap<>();
+        timers.put(TimeAgent.ProductionStage.WYTAPIANIE, parseTime(time.getText()));
+        timers.put(TimeAgent.ProductionStage.PODGRZANIE1, parseTime(time1.getText()));
+        timers.put(TimeAgent.ProductionStage.PODGRZANIE2, parseTime(time2.getText()));
         return timers;
     }
 
     private long parseTime(String text) {
         try {
-            return Long.parseLong(text) * 60 * 1000; // min -> sek
+            return Long.parseLong(text) * 60 * 1000; // min -> ms
         } catch (NumberFormatException e) {
             return 0;
         }
     }
 
     @FXML
-    void handleShowStoper() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stoper.fxml"));
+    void handleShowStopwatch() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stopwatch.fxml"));
         Parent root;
         try {
             root = loader.load();
-            StoperController controller = loader.getController();
+            StopwatchController controller = loader.getController();
             controller.setScene((Stage) PredictPane.getScene().getWindow(), root);
-            controller.addParameters(prepareParameters());
             controller.setStages(prepareStages());
-            controller.start();
+            controller.showParameters(prepareParameters());
+            controller.initializeProperties();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
