@@ -5,7 +5,8 @@ public enum Agents {
     LEARNING_AGENT("Agent uczący"),
     PROCESS_AGENT("Agent procesu"),
     PRODUCTION_AGENT("Agent produkcji"),
-    UI_AGENT("Agent UI");
+    UI_AGENT("Agent UI"),
+    TIME_AGENT("Agent pomiaru czasu");
 
     private String displayName;
     Agents(String displayName) {

@@ -2,6 +2,7 @@ package agh.controllers;
 
 import agh.agents.InterfaceUI;
 import agh.agents.MainContainer;
+import agh.agents.TimeAgent;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 import javafx.collections.FXCollections;
@@ -21,10 +22,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class PredictController implements Initializable {
 
@@ -139,7 +137,7 @@ public class PredictController implements Initializable {
     }
 
     private Map<String, String> prepareParameters() {
-        Map<String, String> parameters = new HashMap<>();
+        Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put(tempLabel.getText(), temp.getText());
         parameters.put(timeLabel.getText(), time.getText());
         parameters.put(temp1Label.getText(), temp1.getText());
@@ -150,6 +148,22 @@ public class PredictController implements Initializable {
         return parameters;
     }
 
+    private Map<TimeAgent.StoperType, Long> prepareStages() {
+        Map<TimeAgent.StoperType, Long> timers = new HashMap<>();
+        timers.put(TimeAgent.StoperType.WATAPIANIE, parseTime(time.getText()));
+        timers.put(TimeAgent.StoperType.PODGRZANIE1, parseTime(time1.getText()));
+        timers.put(TimeAgent.StoperType.PODGRZANIE2, parseTime(time2.getText()));
+        return timers;
+    }
+
+    private long parseTime(String text) {
+        try {
+            return Long.parseLong(text) * 60 * 1000; // min -> sek
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     @FXML
     void handleShowStoper() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stoper.fxml"));
@@ -158,7 +172,9 @@ public class PredictController implements Initializable {
             root = loader.load();
             StoperController controller = loader.getController();
             controller.setScene((Stage) PredictPane.getScene().getWindow(), root);
-            controller.setProductionParameters(prepareParameters());
+            controller.addParameters(prepareParameters());
+            controller.setStages(prepareStages());
+            controller.start();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
