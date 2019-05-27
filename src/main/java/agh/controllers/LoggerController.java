@@ -5,18 +5,19 @@ import agh.agents.MainContainer;
 import agh.utils.*;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
+import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.controlsfx.control.CheckComboBox;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,9 +34,11 @@ public class LoggerController implements Initializable {
     @FXML
     private TableView<LogMessage> tableView;
     @FXML
-    private ChoiceBox<FilterItem> logLevelFilterBox;
+    private CheckComboBox<FilterItem> logLevelFilterBox;
     @FXML
-    private ChoiceBox<FilterItem> agentFilterBox;
+    private CheckComboBox<FilterItem> agentFilterBox;
+    @FXML
+    private CheckComboBox<FilterItem> typeFilterBox;
 
     private FilteredList<LogMessage> list;
 
@@ -67,12 +70,6 @@ public class LoggerController implements Initializable {
     }
 
     @FXML
-    void levelFilterAction(ActionEvent _event) { updateFiltering(); }
-
-    @FXML
-    void agentFilterAction(ActionEvent _event) { updateFiltering(); }
-
-    @FXML
     void handleSave(ActionEvent _event) {
         try{
             FileWriter fw = new FileWriter(LOG_FILENAME);
@@ -99,10 +96,12 @@ public class LoggerController implements Initializable {
         agentCol.setCellValueFactory(new PropertyValueFactory("agent"));
         TableColumn<LogMessage,String> levelCol = new TableColumn<>("Poziom");
         levelCol.setCellValueFactory(new PropertyValueFactory("level"));
+        TableColumn<LogMessage,String> typeCol = new TableColumn<>("Typ");
+        typeCol.setCellValueFactory(new PropertyValueFactory("type"));
         TableColumn<LogMessage,String> messageCol = new TableColumn<>("Wiadomość");
         messageCol.setCellValueFactory(new PropertyValueFactory("message"));
 
-        tableView.getColumns().setAll(timeCol, agentCol, levelCol, messageCol);
+        tableView.getColumns().setAll(timeCol, agentCol, levelCol, typeCol, messageCol);
     }
 
     private void loadFilters(){
@@ -115,28 +114,37 @@ public class LoggerController implements Initializable {
             agentFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
         }
 
-        agentFilterBox.getSelectionModel().selectFirst();
-        logLevelFilterBox.getSelectionModel().selectFirst();
+        for ( LogMessageType filter : LogMessageType.values()) {
+            typeFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
+        }
+
         loading = false;
+
+        initCheckComboBox(agentFilterBox);
+        initCheckComboBox(logLevelFilterBox);
+        initCheckComboBox(typeFilterBox);
+    }
+
+    private void initCheckComboBox(CheckComboBox<FilterItem> box){
+        box.getCheckModel().getCheckedItems().addListener((ListChangeListener<FilterItem>) c -> updateFiltering());
+        box.getCheckModel().checkAll();
     }
 
     private boolean levelPredicate(LogMessage m) {
-        if(logLevelFilterBox.getValue().key == LogLevel.EMPTY)
-            return true;
-        else
-            return m.getLevel().equals(logLevelFilterBox.getValue().key);
+        return logLevelFilterBox.getCheckModel().getCheckedItems().stream().map(f -> f.key).anyMatch(k -> k == m.getLevel());
     }
 
     private boolean agentPredicate(LogMessage m) {
-        if(agentFilterBox.getValue().key == Agents.EMPTY)
-            return true;
-        else
-            return m.getAgent().equals(agentFilterBox.getValue().key);
+        return agentFilterBox.getCheckModel().getCheckedItems().stream().map(f -> f.key).anyMatch(k -> k == m.getAgent());
+    }
+
+    private boolean typePredicate(LogMessage m) {
+        return typeFilterBox.getCheckModel().getCheckedItems().stream().map(f -> f.key).anyMatch(k -> k == m.getType());
     }
 
     private void updateFiltering(){
         if(loading)
             return;
-        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) );
+        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) && typePredicate(s));
     }
 }

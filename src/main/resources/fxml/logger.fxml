@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
 <Pane fx:id="LoggerPane"
       prefHeight="660.0" prefWidth="923.0"
       xmlns:fx="http://javafx.com/fxml"
@@ -24,14 +25,18 @@
         <HBox alignment="BASELINE_CENTER">
             <VBox>
                 <Label text="Poziom" />
-                <ChoiceBox fx:id="logLevelFilterBox" onAction="#levelFilterAction" prefWidth="200" value="-"/>
+                <CheckComboBox fx:id="logLevelFilterBox" prefWidth="200"/>
             </VBox>
 
             <Region HBox.hgrow="ALWAYS" />
+            <VBox>
+                <Label text="Typ" />
+                <CheckComboBox fx:id="typeFilterBox"  prefWidth="200" />
+            </VBox>
 
             <VBox>
                 <Label text="Agent" />
-                <ChoiceBox fx:id="agentFilterBox" onAction="#agentFilterAction" prefWidth="200" value="-"/>
+                <CheckComboBox fx:id="agentFilterBox"  prefWidth="200" />
             </VBox>
 
             <Region HBox.hgrow="ALWAYS" />

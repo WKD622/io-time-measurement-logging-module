@@ -1,13 +1,13 @@
 package agh.utils;
 
-public enum LogLevel {
-    DEBUG("Debug"),
-    INFO("Informacja"),
-    WARNING("Ostrzeżenie"),
-    ERROR("Błąd");
+public enum LogMessageType {
+    STATE("Status"),
+    LOG("Log"),
+    COMM("Komunikacja"),
+    OTHER("Inne");
 
     private String displayName;
-    LogLevel(String displayName) {
+    LogMessageType(String displayName) {
         this.displayName = displayName;
     }
 

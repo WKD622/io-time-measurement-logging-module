@@ -3,6 +3,7 @@ package agh.agents;
 import agh.utils.Agents;
 import agh.utils.LogLevel;
 import agh.utils.LogMessage;
+import agh.utils.LogMessageType;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -43,9 +44,6 @@ public class LoggingAgent extends Agent implements ILogging {
         });
     }
 
-    public static ACLMessage prepareLog(LogLevel level, String message) {
-        return prepareLog(level, Agents.EMPTY, message);
-    }
 
     public static ACLMessage prepareLog(LogLevel level, Agents agent, String message) {
         return prepareLog(level, agent, LocalTime.now().toString(), message);
@@ -55,7 +53,7 @@ public class LoggingAgent extends Agent implements ILogging {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(new AID("Logging-agent", AID.ISLOCALNAME));
         try {
-            msg.setContentObject(new LogMessage(level, agent, time, message));
+            msg.setContentObject(new LogMessage(level, agent, LogMessageType.OTHER, time, message));
         } catch (IOException e) {
             e.printStackTrace();
         }
