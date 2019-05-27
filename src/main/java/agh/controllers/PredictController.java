@@ -175,6 +175,7 @@ public class PredictController implements Initializable {
             controller.setStages(prepareStages());
             controller.showParameters(prepareParameters());
             controller.initializeProperties();
+            controller.initializeIterator();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

@@ -109,18 +109,23 @@ public class StopwatchController implements Initializable {
     private void nextStage() {
         if (stagesIterator.hasNext()) {
             currentStage.set(stagesIterator.next());
-            showStage();
         } else {
             currentStage.set(null);
         }
     }
 
     private void showStage() {
+        Map<String, String> info = new LinkedHashMap<>();
+        info.put("Aktualny etap", currentStage.get().getKey().toString());
+        String text = prepareMap(info);
+        this.info.setText(text);
+    }
+
+    private void appendStageDetails(String previousText) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         Map<String, String> info = new LinkedHashMap<>();
         LocalDateTime start = LocalDateTime.now();
 
-        info.put("Aktualny etap", currentStage.get().getKey().toString());
         info.put("Czas rozpoczęcia etapu", formatter.format(start));
 
         Long duration = currentStage.get().getValue();
@@ -129,7 +134,7 @@ public class StopwatchController implements Initializable {
             info.put("Przewidywany czas zakończenia etapu", formatter.format(end));
         }
 
-        this.info.setText(prepareMap(info));
+        this.info.setText(previousText + "\n" + prepareMap(info));
     }
 
     @Override
@@ -180,6 +185,12 @@ public class StopwatchController implements Initializable {
                 currentStage));
     }
 
+    void initializeIterator() {
+        stagesIterator = stages.entrySet().iterator();
+        currentStage.set(stagesIterator.next());
+        showStage();
+    }
+
     @FXML
     public void handleShowLogs() {
         try {
@@ -212,11 +223,10 @@ public class StopwatchController implements Initializable {
     }
 
     public void handleStart(ActionEvent actionEvent) {
-        if (currentStage.get() == null) {
+        if (!started) {
             started = true;
-            stagesIterator = stages.entrySet().iterator();
-            nextStage();
         }
+        appendStageDetails(info.getText());
 
         measuring.set(true);
         time.start(currentStage.get().getKey());
@@ -233,6 +243,7 @@ public class StopwatchController implements Initializable {
 
         clearStage();
         nextStage();
+        showStage();
     }
 
     public void handleQuit(ActionEvent actionEvent) {
