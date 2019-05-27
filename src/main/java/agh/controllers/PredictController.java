@@ -2,6 +2,7 @@ package agh.controllers;
 
 import agh.agents.InterfaceUI;
 import agh.agents.MainContainer;
+import agh.agents.TimeAgent;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 import javafx.collections.FXCollections;
@@ -21,12 +22,17 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class PredictController implements Initializable {
+
+    public Label tempLabel;
+    public Label timeLabel;
+    public Label temp1Label;
+    public Label time1Label;
+    public Label temp2Label;
+    public Label time2Label;
+    public Label massLabel;
 
     private Controller controller = Controller.getInstance();
     private Map<Integer, int[]> metalsMap = new HashMap<>();
@@ -130,14 +136,46 @@ public class PredictController implements Initializable {
         quality.setText(results[2]);
     }
 
+    private Map<String, String> prepareParameters() {
+        Map<String, String> parameters = new LinkedHashMap<>();
+        parameters.put(tempLabel.getText(), temp.getText());
+        parameters.put(timeLabel.getText(), time.getText());
+        parameters.put(temp1Label.getText(), temp1.getText());
+        parameters.put(time1Label.getText(), time1.getText());
+        parameters.put(temp2Label.getText(), temp2.getText());
+        parameters.put(time2Label.getText(), time2.getText());
+        parameters.put(massLabel.getText(), mass.getText());
+        return parameters;
+    }
+
+    private Map<TimeAgent.ProductionStage, Long> prepareStages() {
+        Map<TimeAgent.ProductionStage, Long> timers = new HashMap<>();
+        timers.put(TimeAgent.ProductionStage.WYTAPIANIE, parseTime(time.getText()));
+        timers.put(TimeAgent.ProductionStage.PODGRZANIE1, parseTime(time1.getText()));
+        timers.put(TimeAgent.ProductionStage.PODGRZANIE2, parseTime(time2.getText()));
+        return timers;
+    }
+
+    private long parseTime(String text) {
+        try {
+            return Long.parseLong(text) * 60 * 1000; // min -> ms
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     @FXML
-    void handleShowStoper() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stoper.fxml"));
+    void handleShowStopwatch() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stopwatch.fxml"));
         Parent root;
         try {
             root = loader.load();
-            StoperController controller = loader.getController();
+            StopwatchController controller = loader.getController();
             controller.setScene((Stage) PredictPane.getScene().getWindow(), root);
+            controller.setStages(prepareStages());
+            controller.showParameters(prepareParameters());
+            controller.initializeProperties();
+            controller.initializeIterator();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

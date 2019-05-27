@@ -1,281 +1,225 @@
 package agh.agents;
 
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.lang.acl.ACLMessage;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
-public class TimeAgent extends Agent {
-    private List<Stoper> stopers = new ArrayList<>();
-    private RealTimeStoper stoperWytapianie = new RealTimeStoper(StoperType.WATAPIANIE);
-    private RealTimeStoper stoperKrzepiniecie = new RealTimeStoper(StoperType.KRZEPNIECIE);
-    private RealTimeStoper stoperStudzenie1 = new RealTimeStoper(StoperType.STUDZENIE1);
-    private RealTimeStoper stoperPodgrzanie1 = new RealTimeStoper(StoperType.PODGRZANIE1);
-    private RealTimeStoper stoperStudzenie2 = new RealTimeStoper(StoperType.STUDZENIE2);
-    private RealTimeStoper stoperPodgrzanie2 = new RealTimeStoper(StoperType.PODGRZANIE2);
-    private RealTimeStoper stoperUszlachetnianie = new RealTimeStoper(StoperType.USZLACHETNIANIE);
-    private CpuTimeStoper stoperLearning = new CpuTimeStoper(StoperType.LEARNING);
-    private HashMap<StoperType, Double> times = new HashMap<>();
+public class TimeAgent extends Agent implements ITime {
+
+    private RealTimeStopwatch stoperWytapianie = new RealTimeStopwatch(ProductionStage.WYTAPIANIE);
+    private RealTimeStopwatch stoperKrzepiniecie = new RealTimeStopwatch(ProductionStage.KRZEPNIECIE);
+    private RealTimeStopwatch stoperStudzenie1 = new RealTimeStopwatch(ProductionStage.STUDZENIE1);
+    private RealTimeStopwatch stoperPodgrzanie1 = new RealTimeStopwatch(ProductionStage.PODGRZANIE1);
+    private RealTimeStopwatch stoperStudzenie2 = new RealTimeStopwatch(ProductionStage.STUDZENIE2);
+    private RealTimeStopwatch stoperPodgrzanie2 = new RealTimeStopwatch(ProductionStage.PODGRZANIE2);
+    private RealTimeStopwatch stoperUszlachetnianie = new RealTimeStopwatch(ProductionStage.USZLACHETNIANIE);
+    private CpuTimeStopwatch stoperLearning = new CpuTimeStopwatch(ProductionStage.LEARNING);
+    private static HashMap<ProductionStage, Stopwatch> stages = new HashMap<>();
+    private static ObservableMap<ProductionStage, Long> observableTimes = FXCollections.observableHashMap();
 
     public TimeAgent() {
-        this.stopers.addAll(Arrays.asList(stoperWytapianie, stoperKrzepiniecie, stoperStudzenie1, stoperPodgrzanie1, stoperStudzenie2, stoperPodgrzanie2, stoperUszlachetnianie, stoperLearning));
+        Arrays.asList(
+                stoperWytapianie,
+                stoperKrzepiniecie,
+                stoperStudzenie1,
+                stoperPodgrzanie1,
+                stoperStudzenie2,
+                stoperPodgrzanie2,
+                stoperUszlachetnianie,
+                stoperLearning
+        ).forEach(s -> stages.put(s.getType(), s));
     }
 
-    public HashMap<StoperType, Double> getLog() {
-        return times;
+    public ObservableMap<ProductionStage, Long> getObservableTimes() {
+        return observableTimes;
     }
 
     public void setup() {
+        registerO2AInterface(ITime.class, this);
 
         Thread T = new Thread(() -> {
             while (true) {
                 try {
+                    for (Map.Entry<ProductionStage, Stopwatch> e : stages.entrySet()) {
+                        Stopwatch stopwatch = e.getValue();
+                        if (stopwatch.isMeasuring()) {
+                            Platform.runLater(() -> observableTimes.put(e.getKey(), stopwatch.time()));
+                        }
+                    }
+
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
-                for (Stoper stoper : stopers) {
-                    if (stoper.isMeasuring() || stoper.isEnded()) {
-                        times.put(stoper.getType(), stoper.getTimePassed());
-                    }
                 }
             }
         });
 
         T.start();
-        addBehaviour(new CyclicBehaviour(this) {
-            public void action() {
-                ACLMessage msg = myAgent.receive();
-                if (msg != null) {
-                    parseMessage(msg.getContent());
-                } else {
-                    block();
-                }
-            }
-        });
+
+//        addBehaviour(new CyclicBehaviour(this) {
+//            public void action() {
+//                ACLMessage msg = myAgent.receive();
+//                if (msg != null) {
+//                    parseMessage(msg.getContent());
+//                } else {
+//                    block();
+//                }
+//            }
+//        });
     }
 
-    private void parseMessage(String message) {
-        if (message.contains("START")) {
-            if (message.contains(ProcessState.START_WYTAPIANIE.toString())) {
-                this.stoperWytapianie.start();
-            } else if (message.contains(ProcessState.START_KRZEPNIECIE.toString())) {
-                this.stoperKrzepiniecie.start();
-            } else if (message.contains(ProcessState.START_STUDZENIE_1.toString())) {
-                this.stoperStudzenie1.start();
-            } else if (message.contains(ProcessState.START_PODGRZANIE_1.toString())) {
-                this.stoperPodgrzanie1.start();
-            } else if (message.contains(ProcessState.START_STUDZENIE_2.toString())) {
-                this.stoperStudzenie2.start();
-            } else if (message.contains(ProcessState.START_PODGRZANIE_2.toString())) {
-                this.stoperPodgrzanie2.start();
-            } else if (message.contains(ProcessState.START_LEARNING.toString())) {
-                this.stoperLearning.start();
-            } else if (message.contains(ProcessState.START_USZLACHETNIANIE.toString())) {
-                this.stoperUszlachetnianie.start();
-            }
-        } else if (message.contains("END")) {
-            if (message.contains(ProcessState.END_WYTAPIANIE.toString())) {
-                this.stoperWytapianie.stop();
-                times.put(this.stoperWytapianie.getType(), this.stoperWytapianie.getMeasurement());
-            } else if (message.contains(ProcessState.END_KRZEPNIECIE.toString())) {
-                this.stoperKrzepiniecie.stop();
-                times.put(this.stoperKrzepiniecie.getType(), this.stoperKrzepiniecie.getMeasurement());
-            } else if (message.contains(ProcessState.END_STUDZENIE_1.toString())) {
-                this.stoperStudzenie1.stop();
-                times.put(this.stoperStudzenie1.getType(), this.stoperStudzenie1.getMeasurement());
-            } else if (message.contains(ProcessState.END_PODGRZANIE_1.toString())) {
-                this.stoperPodgrzanie1.stop();
-                times.put(this.stoperPodgrzanie1.getType(), this.stoperPodgrzanie1.getMeasurement());
-            } else if (message.contains(ProcessState.END_STUDZENIE_2.toString())) {
-                this.stoperStudzenie2.stop();
-                times.put(this.stoperStudzenie2.getType(), this.stoperStudzenie2.getMeasurement());
-            } else if (message.contains(ProcessState.END_PODGRZANIE_2.toString())) {
-                this.stoperPodgrzanie2.stop();
-                times.put(this.stoperPodgrzanie2.getType(), this.stoperPodgrzanie2.getMeasurement());
-            } else if (message.contains(ProcessState.END_USZLACHETNIANIE.toString())) {
-                this.stoperUszlachetnianie.stop();
-                times.put(this.stoperUszlachetnianie.getType(), this.stoperUszlachetnianie.getMeasurement());
-            } else if (message.contains(ProcessState.END_LEARNING.toString())) {
-                this.stoperLearning.stop();
-                times.put(this.stoperLearning.getType(), this.stoperLearning.getMeasurement());
-            }
+    @Override
+    public void start(ProductionStage stage) {
+        stages.get(stage).start();
+//        System.out.println("started: " + stage.toString());
+    }
+
+    @Override
+    public void stop(ProductionStage stage) {
+        stages.get(stage).stop();
+//        System.out.println("stopped: " + stage.toString());
+    }
+
+    @Override
+    public void reset(ProductionStage stage) {
+        stages.get(stage).reset();
+    }
+
+    @Override
+    public boolean isMeasuring(ProductionStage stage) {
+        Boolean result = null;
+        try {
+            Callable<Boolean> callable = () -> stages.get(stage).isMeasuring();
+            FutureTask<Boolean> futureTask = new FutureTask<>(callable);
+            Platform.runLater(futureTask);
+            result = futureTask.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
+        return result;
     }
 
-    interface Stoper {
-        StoperType getType();
+    abstract class Stopwatch {
 
-        void start();
+        ProductionStage type;
+        boolean measuring;
+        boolean ended;
+        long start;
+        long stop;
 
-        double getTimePassed();
+        final Supplier<Long> measurement;
 
-        boolean isMeasuring();
-
-        boolean isEnded();
-
-        void stop();
-
-        double getMeasurement();
-
-        void reset();
-    }
-
-    class RealTimeStoper implements Stoper {
-        private boolean ended;
-        private boolean isMeasuring;
-        private long start;
-        private long stop;
-        private StoperType type;
-
-        public RealTimeStoper(StoperType type) {
-            this.isMeasuring = false;
+        Stopwatch(ProductionStage type, Supplier<Long> measurement) {
             this.type = type;
-            this.ended = false;
+            this.measurement = measurement;
+
+            this.measuring = false;
+            reset();
+        }
+
+        ProductionStage getType() {
+            return type;
+        }
+
+        boolean isMeasuring() {
+            return measuring;
+        }
+
+        boolean isEnded() {
+            return ended;
         }
 
         @Override
-        public StoperType getType() {
-            return this.type;
-        }
-
-        @Override
-        public void start() {
-            this.start = System.currentTimeMillis();
-            this.isMeasuring = true;
-        }
-
-        @Override
-        public double getTimePassed() {
-            return (System.currentTimeMillis() - this.start) / 1000.0;
-        }
-
-        @Override
-        public boolean isMeasuring() {
-            return this.isMeasuring;
-        }
-
-        @Override
-        public boolean isEnded() {
-            return this.ended;
-        }
-
-        @Override
-        public void stop() {
-            stop = System.currentTimeMillis();
-            this.isMeasuring = false;
-            this.ended = true;
-        }
-
-        @Override
-        public double getMeasurement() {
-            return (stop - start) / 1000.0;
-        }
-
         public String toString() {
-            return this.getMeasurement() + " s.";
+            return time() / 1000.0 + "s";
         }
 
-        @Override
-        public void reset() {
-            this.start = 0;
-            this.stop = 0;
-        }
-    }
-
-    class CpuTimeStoper implements Stoper {
-        private boolean ended;
-        private boolean isMeasuring;
-        private long start;
-        private long stop;
-        private StoperType type;
-
-        public CpuTimeStoper(StoperType type) {
-            this.isMeasuring = false;
-            this.type = type;
-            this.ended = false;
+        void reset() {
+            start = measurement.get();
+            ended = true;
         }
 
-        @Override
-        public StoperType getType() {
-            return this.type;
+        void start() {
+            if (ended) {
+                start = measurement.get();
+                ended = false;
+            } else {
+                start = measurement.get() - (stop - start);
+            }
+            measuring = true;
         }
 
-        @Override
-        public void start() {
-            this.start = System.nanoTime();
-            this.isMeasuring = true;
+        void stop() {
+            stop = measurement.get();
+            measuring = false;
         }
 
-        @Override
-        public double getTimePassed() {
-            return (System.nanoTime() - this.start) / 1000.0;
-        }
-
-        @Override
-        public boolean isMeasuring() {
-            return this.isMeasuring;
-        }
-
-        @Override
-        public boolean isEnded() {
-            return this.ended;
-        }
-
-        @Override
-        public void stop() {
-            stop = System.nanoTime();
-            this.isMeasuring = false;
-            this.ended = true;
-        }
-
-        @Override
-        public double getMeasurement() {
-            return (stop - start) / 1000.0;
-        }
-
-        public String toString() {
-            return this.getMeasurement() + " s.";
-        }
-
-        @Override
-        public void reset() {
-            this.start = 0;
-            this.stop = 0;
+        long time() {
+            return measurement.get() - start;
         }
     }
 
-    public enum ProcessState {
-        START_LEARNING,
-        END_LEARNING,
-        START_WYTAPIANIE,
-        END_WYTAPIANIE,
-        START_KRZEPNIECIE,
-        END_KRZEPNIECIE,
-        START_STUDZENIE_1,
-        END_STUDZENIE_1,
-        START_PODGRZANIE_1,
-        END_PODGRZANIE_1,
-        START_STUDZENIE_2,
-        END_STUDZENIE_2,
-        START_PODGRZANIE_2,
-        END_PODGRZANIE_2,
-        START_USZLACHETNIANIE,
-        END_USZLACHETNIANIE,
+    class RealTimeStopwatch extends Stopwatch {
+
+        RealTimeStopwatch(ProductionStage type) {
+            super(type, System::currentTimeMillis);
+        }
     }
 
-    public enum StoperType {
+    class CpuTimeStopwatch extends Stopwatch {
+
+        CpuTimeStopwatch(ProductionStage type) {
+            super(type, System::nanoTime);
+        }
+    }
+
+//    public enum ProcessState {
+//        START_LEARNING,
+//        END_LEARNING,
+//        START_WYTAPIANIE,
+//        END_WYTAPIANIE,
+//        START_KRZEPNIECIE,
+//        END_KRZEPNIECIE,
+//        START_STUDZENIE_1,
+//        END_STUDZENIE_1,
+//        START_PODGRZANIE_1,
+//        END_PODGRZANIE_1,
+//        START_STUDZENIE_2,
+//        END_STUDZENIE_2,
+//        START_PODGRZANIE_2,
+//        END_PODGRZANIE_2,
+//        START_USZLACHETNIANIE,
+//        END_USZLACHETNIANIE,
+//    }
+
+    public enum ProductionStage {
         LEARNING,
-        WATAPIANIE,
+        WYTAPIANIE,
         KRZEPNIECIE,
         STUDZENIE1,
         PODGRZANIE1,
-        PODGRZANIE2,
         STUDZENIE2,
-        USZLACHETNIANIE,
+        PODGRZANIE2,
+        USZLACHETNIANIE
+    }
+
+    public List<ProductionStage> productionStages() {
+        final LinkedList<ProductionStage> result = new LinkedList<>();
+        result.add(ProductionStage.WYTAPIANIE);
+        result.add(ProductionStage.KRZEPNIECIE);
+        result.add(ProductionStage.STUDZENIE1);
+        result.add(ProductionStage.PODGRZANIE1);
+        result.add(ProductionStage.STUDZENIE2);
+        result.add(ProductionStage.PODGRZANIE2);
+        result.add(ProductionStage.USZLACHETNIANIE);
+        return result;
     }
 }
