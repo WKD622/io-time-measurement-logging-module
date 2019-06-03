@@ -46,6 +46,10 @@ public class LoggingAgent extends Agent implements ILogging {
         return prepareLog(level, LogSeverity.MEDIUM, agent, LogMessageType.STATUS, LocalTime.now().toString(), message);
     }
 
+    public static ACLMessage prepareLog(LogLevel level, LogSeverity severity, Agents agent, LogMessageType type, String message) {
+        return prepareLog(level, severity, agent, type, LocalTime.now().toString(), message);
+    }
+
     public static ACLMessage prepareLog(LogLevel level, LogSeverity severity, Agents agent, LogMessageType type, String time, String message) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(new AID("Logging-agent", AID.ISLOCALNAME));
