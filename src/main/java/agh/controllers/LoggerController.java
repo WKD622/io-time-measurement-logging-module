@@ -39,6 +39,8 @@ public class LoggerController implements Initializable {
     private CheckComboBox<FilterItem> agentFilterBox;
     @FXML
     private CheckComboBox<FilterItem> typeFilterBox;
+    @FXML
+    private CheckComboBox<FilterItem> logSeverityFilterBox;
 
     private FilteredList<LogMessage> list;
 
@@ -94,14 +96,16 @@ public class LoggerController implements Initializable {
         timeCol.setCellValueFactory(new PropertyValueFactory("time"));
         TableColumn<LogMessage,String> agentCol = new TableColumn<>("Agent");
         agentCol.setCellValueFactory(new PropertyValueFactory("agent"));
-        TableColumn<LogMessage,String> levelCol = new TableColumn<>("Poziom");
+        TableColumn<LogMessage,String> levelCol = new TableColumn<>("Rodzaj");
         levelCol.setCellValueFactory(new PropertyValueFactory("level"));
+        TableColumn<LogMessage,String> severityCol = new TableColumn<>("Poziom");
+        severityCol.setCellValueFactory(new PropertyValueFactory("severity"));
         TableColumn<LogMessage,String> typeCol = new TableColumn<>("Typ");
         typeCol.setCellValueFactory(new PropertyValueFactory("type"));
         TableColumn<LogMessage,String> messageCol = new TableColumn<>("Wiadomość");
         messageCol.setCellValueFactory(new PropertyValueFactory("message"));
 
-        tableView.getColumns().setAll(timeCol, agentCol, levelCol, typeCol, messageCol);
+        tableView.getColumns().setAll(timeCol, agentCol, levelCol, severityCol, typeCol, messageCol);
     }
 
     private void loadFilters(){
@@ -118,11 +122,16 @@ public class LoggerController implements Initializable {
             typeFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
         }
 
+        for ( LogSeverity filter : LogSeverity.values()) {
+            logSeverityFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
+        }
+
         loading = false;
 
         initCheckComboBox(agentFilterBox);
         initCheckComboBox(logLevelFilterBox);
         initCheckComboBox(typeFilterBox);
+        initCheckComboBox(logSeverityFilterBox);
     }
 
     private void initCheckComboBox(CheckComboBox<FilterItem> box){
@@ -142,9 +151,13 @@ public class LoggerController implements Initializable {
         return typeFilterBox.getCheckModel().getCheckedItems().stream().map(f -> f.key).anyMatch(k -> k == m.getType());
     }
 
+    private boolean severityPredicate(LogMessage m) {
+        return logSeverityFilterBox.getCheckModel().getCheckedItems().stream().map(f -> f.key).anyMatch(k -> k == m.getSeverity());
+    }
+
     private void updateFiltering(){
         if(loading)
             return;
-        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) && typePredicate(s));
+        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) && typePredicate(s) && severityPredicate(s));
     }
 }
