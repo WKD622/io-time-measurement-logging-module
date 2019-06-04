@@ -57,6 +57,7 @@ public class LoggerController implements Initializable {
 
             loadTable();
             loadFilters();
+            tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         } catch (ControllerException e) {
             e.printStackTrace();
         }
