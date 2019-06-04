@@ -20,10 +20,14 @@ public class TimeAgent extends Agent implements ITime {
     private RealTimeStopwatch stoperStudzenie2 = new RealTimeStopwatch(StopwatchType.STUDZENIE2);
     private RealTimeStopwatch stoperPodgrzanie2 = new RealTimeStopwatch(StopwatchType.PODGRZANIE2);
     private RealTimeStopwatch stoperUszlachetnianie = new RealTimeStopwatch(StopwatchType.USZLACHETNIANIE);
-    private CpuTimeStopwatch stoperForest = new CpuTimeStopwatch(StopwatchType.LEARNING_FOREST);
-    private CpuTimeStopwatch stoperM5p = new CpuTimeStopwatch(StopwatchType.LEARNING_M5P);
-    private CpuTimeStopwatch stoperMlp = new CpuTimeStopwatch(StopwatchType.LEARNING_MLP);
-    private CpuTimeStopwatch stoperVote = new CpuTimeStopwatch(StopwatchType.LEARNING_VOTE);
+    private CpuTimeStopwatch stoperForestCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_FOREST_CPU);
+    private UserTimeStopwatch stoperForestUser = new UserTimeStopwatch(StopwatchType.LEARNING_FOREST_USER);
+    private CpuTimeStopwatch stoperM5pCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_M5P_CPU);
+    private UserTimeStopwatch stoperM5pUser = new UserTimeStopwatch(StopwatchType.LEARNING_M5P_USER);
+    private CpuTimeStopwatch stoperMlpCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_MLP_CPU);
+    private UserTimeStopwatch stoperMlpUser = new UserTimeStopwatch(StopwatchType.LEARNING_MLP_USER);
+    private CpuTimeStopwatch stoperVoteCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_VOTE_CPU);
+    private UserTimeStopwatch stoperVoteUser = new UserTimeStopwatch(StopwatchType.LEARNING_VOTE_USER);
     private static HashMap<StopwatchType, Stopwatch> stopwatches = new HashMap<>();
     private static ObservableMap<StopwatchType, Long> observableTimes = FXCollections.observableHashMap();
 
@@ -36,10 +40,14 @@ public class TimeAgent extends Agent implements ITime {
                 stoperStudzenie2,
                 stoperPodgrzanie2,
                 stoperUszlachetnianie,
-                stoperForest,
-                stoperM5p,
-                stoperMlp,
-                stoperVote
+                stoperForestCpu,
+                stoperForestUser,
+                stoperM5pCpu,
+                stoperM5pUser,
+                stoperMlpCpu,
+                stoperMlpUser,
+                stoperVoteCpu,
+                stoperVoteUser
         ).forEach(s -> stopwatches.put(s.getType(), s));
     }
 
@@ -104,6 +112,11 @@ public class TimeAgent extends Agent implements ITime {
         return stopwatches.get(type).time();
     }
 
+    @Override
+    public void initializeMeasurement(StopwatchType type, Supplier<Long> measurement) {
+        ((LearningTimeStopwatch) stopwatches.get(type)).initializeMeasurement(measurement);
+    }
+
     abstract class Stopwatch {
 
         StopwatchType type;
@@ -112,7 +125,7 @@ public class TimeAgent extends Agent implements ITime {
         long start;
         long stop;
 
-        final Supplier<Long> measurement;
+        Supplier<Long> measurement;
 
         Stopwatch(StopwatchType type, Supplier<Long> measurement) {
             this.type = type;
@@ -120,6 +133,11 @@ public class TimeAgent extends Agent implements ITime {
 
             this.measuring = false;
             reset();
+        }
+
+        Stopwatch(StopwatchType type) {
+            this.type = type;
+            this.measuring = false;
         }
 
         StopwatchType getType() {
@@ -171,25 +189,48 @@ public class TimeAgent extends Agent implements ITime {
         }
     }
 
-    class CpuTimeStopwatch extends Stopwatch {
+    abstract class LearningTimeStopwatch extends Stopwatch {
+
+        LearningTimeStopwatch(StopwatchType type) {
+            super(type);
+        }
+
+        void initializeMeasurement(Supplier<Long> measurement) {
+            this.measurement = measurement;
+            reset();
+        }
+    }
+
+    class CpuTimeStopwatch extends LearningTimeStopwatch {
 
         CpuTimeStopwatch(StopwatchType type) {
-            super(type, System::nanoTime);
+            super(type);
+        }
+    }
+
+    class UserTimeStopwatch extends LearningTimeStopwatch {
+
+        UserTimeStopwatch(StopwatchType type) {
+            super(type);
         }
     }
 
     public enum StopwatchType {
-        LEARNING_MLP,
-        LEARNING_M5P,
-        LEARNING_FOREST,
-        LEARNING_VOTE,
         WYTAPIANIE,
         KRZEPNIECIE,
         STUDZENIE1,
         PODGRZANIE1,
         STUDZENIE2,
         PODGRZANIE2,
-        USZLACHETNIANIE
+        USZLACHETNIANIE,
+        LEARNING_VOTE_USER,
+        LEARNING_VOTE_CPU,
+        LEARNING_MLP_USER,
+        LEARNING_MLP_CPU,
+        LEARNING_M5P_USER,
+        LEARNING_M5P_CPU,
+        LEARNING_FOREST_USER,
+        LEARNING_FOREST_CPU
     }
 
     public List<StopwatchType> productionStages() {

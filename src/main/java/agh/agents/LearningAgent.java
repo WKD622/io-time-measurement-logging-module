@@ -10,6 +10,8 @@ import jade.lang.acl.MessageTemplate;
 import jade.wrapper.ControllerException;
 import weka.classifiers.Classifier;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,12 +24,6 @@ public class LearningAgent extends Agent {
     private Agents agent = Agents.LEARNING_AGENT;
 
     private ITime time;
-
-    private String formatNanoTime(long time) {
-        String format = "ss.SSSSSS's'";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        return formatter.format(LocalTime.ofNanoOfDay(time));
-    }
 
     protected void setup() {
         Object[] args = getArguments();
@@ -54,8 +50,10 @@ public class LearningAgent extends Agent {
                 for (MessageTemplate checkState : templates) {
                     checkMsg[counter++] = receive(checkState);
                 }
+
+                ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+
                 for (ACLMessage msg : checkMsg) {
-                    long t;
                     if (msg != null) {
                         switch (msg.getPerformative()) {
                             case (AgentMessages.CHECK_AGENT):
@@ -65,56 +63,32 @@ public class LearningAgent extends Agent {
                                 send(reply);
                                 break;
                             case (AgentMessages.START_LEARNING_MLP):
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training mlp start"));
-                                time.start(TimeAgent.StopwatchType.LEARNING_MLP);
-                                productionData.train("TrainingData.arff", classififiers[0]);
-                                reply = new ACLMessage(AgentMessages.START_LEARNING_MLP_ACK);
-                                t = time.time(TimeAgent.StopwatchType.LEARNING_MLP);
-                                time.stop(TimeAgent.StopwatchType.LEARNING_MLP);
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training mlp time: " + formatNanoTime(t)));
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training mlp end"));
-                                reply.setContent("success ");
-                                reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
-                                send(reply);
+                                training("mlp", 0, args, bean,
+                                        TimeAgent.StopwatchType.LEARNING_MLP_CPU,
+                                        TimeAgent.StopwatchType.LEARNING_MLP_USER,
+                                        AgentMessages.START_LEARNING_MLP_ACK
+                                );
                                 break;
                             case (AgentMessages.START_LEARNING_M5P):
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training m5p start"));
-                                time.start(TimeAgent.StopwatchType.LEARNING_M5P);
-                                productionData.train("TrainingData.arff", classififiers[2]);
-                                reply = new ACLMessage(AgentMessages.START_LEARNING_M5P_ACK);
-                                t = time.time(TimeAgent.StopwatchType.LEARNING_M5P);
-                                time.stop(TimeAgent.StopwatchType.LEARNING_M5P);
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training m5p time: " + formatNanoTime(t)));
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent,"Training m5p end"));
-                                reply.setContent("success ");
-                                reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
-                                send(reply);
+                                training("m5p", 2, args, bean,
+                                        TimeAgent.StopwatchType.LEARNING_M5P_CPU,
+                                        TimeAgent.StopwatchType.LEARNING_M5P_USER,
+                                        AgentMessages.START_LEARNING_M5P_ACK
+                                );
                                 break;
                             case (AgentMessages.START_LEARNING_FOREST):
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training forest start"));
-                                time.start(TimeAgent.StopwatchType.LEARNING_FOREST);
-                                productionData.train("TrainingData.arff", classififiers[1]);
-                                reply = new ACLMessage(AgentMessages.START_LEARNING_FOREST_ACK);
-                                t = time.time(TimeAgent.StopwatchType.LEARNING_FOREST);
-                                time.stop(TimeAgent.StopwatchType.LEARNING_FOREST);
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training forest time: " + formatNanoTime(t)));
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent,"Training forest end"));
-                                reply.setContent("success ");
-                                reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
-                                send(reply);
+                                training("forest", 1, args, bean,
+                                        TimeAgent.StopwatchType.LEARNING_FOREST_CPU,
+                                        TimeAgent.StopwatchType.LEARNING_FOREST_USER,
+                                        AgentMessages.START_LEARNING_FOREST_ACK
+                                );
                                 break;
                             case (AgentMessages.START_LEARNING_VOTE):
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training vote start"));
-                                time.start(TimeAgent.StopwatchType.LEARNING_VOTE);
-                                productionData.train("TrainingData.arff", classififiers[3]);
-                                reply = new ACLMessage(AgentMessages.START_LEARNING_VOTE_ACK);
-                                t = time.time(TimeAgent.StopwatchType.LEARNING_VOTE);
-                                time.stop(TimeAgent.StopwatchType.LEARNING_VOTE);
-                                send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training vote time: " + formatNanoTime(t)));
-                                send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent,"Training vote end"));
-                                reply.setContent("success ");
-                                reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
-                                send(reply);
+                                training("vote", 3, args, bean,
+                                        TimeAgent.StopwatchType.LEARNING_VOTE_CPU,
+                                        TimeAgent.StopwatchType.LEARNING_VOTE_USER,
+                                        AgentMessages.START_LEARNING_VOTE_ACK
+                                );
                                 break;
                         }
                     }
@@ -122,5 +96,37 @@ public class LearningAgent extends Agent {
                 block();
             }
         });
+    }
+
+    private void training(String name, int classifier, Object[] args, ThreadMXBean bean,
+                          TimeAgent.StopwatchType typeCpu,
+                          TimeAgent.StopwatchType typeUser,
+                          int replyAck) {
+        ACLMessage reply;
+        send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training " + name + " start"));
+        time.initializeMeasurement(typeCpu, bean::getCurrentThreadCpuTime);
+        time.initializeMeasurement(typeUser, bean::getCurrentThreadUserTime);
+        time.start(typeCpu);
+        time.start(typeUser);
+        productionData.train("TrainingData.arff", classififiers[classifier]);
+        reply = new ACLMessage(replyAck);
+        long timeCpu = time.time(typeCpu);
+        long timeUser = time.time(typeUser);
+        time.stop(typeCpu);
+        time.stop(typeUser);
+        send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training " + name + " time: " +
+                formatNanoTime(timeCpu - timeUser, timeUser)));
+        send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training " + name + " end"));
+        reply.setContent("success ");
+        reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
+        send(reply);
+    }
+
+    private String formatNanoTime(long timeSystem, long timeUser) {
+        String format = "s.SSSSSSSSS's'";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        String sCpu = formatter.format(LocalTime.ofNanoOfDay(timeSystem));
+        String sUser = formatter.format(LocalTime.ofNanoOfDay(timeUser));
+        return "SYSTEM=" + sCpu + ", " + "USER=" + sUser;
     }
 }
