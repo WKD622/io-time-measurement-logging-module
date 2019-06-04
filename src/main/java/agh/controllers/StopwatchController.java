@@ -186,9 +186,12 @@ public class StopwatchController implements Initializable {
     }
 
     void initializeIterator() {
-        stagesIterator = stages.entrySet().iterator();
-        currentStage.set(stagesIterator.next());
-        showStage();
+        if (!started) {
+
+            stagesIterator = stages.entrySet().iterator();
+            currentStage.set(stagesIterator.next());
+            showStage();
+        }
     }
 
     @FXML
