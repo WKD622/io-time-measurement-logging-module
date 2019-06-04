@@ -24,14 +24,7 @@ public class LearningAgent extends Agent {
     private ITime time;
 
     private String formatNanoTime(long time) {
-//        long nanos = 1000000000;
-//        Long s = time / nanos;
-//        Long ns = time % nanos;
-//        return s.toString() + ":" + ns.toString() + " s"
         String format = "ss.SSSSSS's'";
-//        Duration duration = Duration.ofNanos(time);
-//
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return formatter.format(LocalTime.ofNanoOfDay(time));
     }
