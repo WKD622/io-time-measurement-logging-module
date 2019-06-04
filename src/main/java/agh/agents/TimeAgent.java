@@ -1,15 +1,10 @@
 package agh.agents;
 
 import jade.core.Agent;
-import jade.lang.acl.MessageTemplate;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -73,29 +68,16 @@ public class TimeAgent extends Agent implements ITime {
         });
 
         T.start();
-
-//        addBehaviour(new CyclicBehaviour(this) {
-//            public void action() {
-//                ACLMessage msg = myAgent.receive();
-//                if (msg != null) {
-//                    parseMessage(msg.getContent());
-//                } else {
-//                    block();
-//                }
-//            }
-//        });
     }
 
     @Override
     public void start(StopwatchType stage) {
         stages.get(stage).start();
-//        System.out.println("started: " + stage.toString());
     }
 
     @Override
     public void stop(StopwatchType stage) {
         stages.get(stage).stop();
-//        System.out.println("stopped: " + stage.toString());
     }
 
     @Override
@@ -195,32 +177,6 @@ public class TimeAgent extends Agent implements ITime {
             super(type, System::nanoTime);
         }
     }
-
-    class UserTimeStopwatch extends Stopwatch {
-
-        UserTimeStopwatch(StopwatchType type) {
-            super(type, System::nanoTime);
-        }
-    }
-
-//    public enum ProcessState {
-//        START_LEARNING,
-//        END_LEARNING,
-//        START_WYTAPIANIE,
-//        END_WYTAPIANIE,
-//        START_KRZEPNIECIE,
-//        END_KRZEPNIECIE,
-//        START_STUDZENIE_1,
-//        END_STUDZENIE_1,
-//        START_PODGRZANIE_1,
-//        END_PODGRZANIE_1,
-//        START_STUDZENIE_2,
-//        END_STUDZENIE_2,
-//        START_PODGRZANIE_2,
-//        END_PODGRZANIE_2,
-//        START_USZLACHETNIANIE,
-//        END_USZLACHETNIANIE,
-//    }
 
     public enum StopwatchType {
         LEARNING_MLP,
