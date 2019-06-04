@@ -1,9 +1,6 @@
 package agh.agents;
 
-import agh.utils.Agents;
-import agh.utils.LogLevel;
-import agh.utils.LogMessage;
-import agh.utils.LogMessageType;
+import agh.utils.*;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -46,14 +43,18 @@ public class LoggingAgent extends Agent implements ILogging {
 
 
     public static ACLMessage prepareLog(LogLevel level, Agents agent, String message) {
-        return prepareLog(level, agent, LocalTime.now().toString(), message);
+        return prepareLog(level, LogSeverity.MEDIUM, agent, LogMessageType.STATUS, LocalTime.now().toString(), message);
     }
 
-    public static ACLMessage prepareLog(LogLevel level, Agents agent, String time, String message) {
+    public static ACLMessage prepareLog(LogLevel level, LogSeverity severity, Agents agent, LogMessageType type, String message) {
+        return prepareLog(level, severity, agent, type, LocalTime.now().toString(), message);
+    }
+
+    public static ACLMessage prepareLog(LogLevel level, LogSeverity severity, Agents agent, LogMessageType type, String time, String message) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(new AID("Logging-agent", AID.ISLOCALNAME));
         try {
-            msg.setContentObject(new LogMessage(level, agent, LogMessageType.OTHER, time, message));
+            msg.setContentObject(new LogMessage(level, severity, agent, type, time, message));
         } catch (IOException e) {
             e.printStackTrace();
         }
