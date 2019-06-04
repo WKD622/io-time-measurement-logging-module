@@ -58,7 +58,7 @@
                 <font><Font size="28"/></font>
             </Text>
 
-            <Label text="Czas do następnego etapu">
+            <Label fx:id="timeRemainingLabel" text="Czas do następnego etapu">
                 <VBox.margin><Insets top="15"/></VBox.margin>
             </Label>
             <Text fx:id="timeRemaining">

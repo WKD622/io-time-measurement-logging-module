@@ -9,6 +9,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ public class LoggerController implements Initializable {
     private Controller controller = Controller.getInstance();
     private boolean loading = false;
     private String LOG_FILENAME = "logs.txt";
+    private View previousView;
 
     @FXML
     private Pane LoggerPane;
@@ -66,7 +68,22 @@ public class LoggerController implements Initializable {
 
     @FXML
     void handleBack() {
-        controller.handleBack(LoggerPane);
+//        controller.handleBack(LoggerPane);
+        try {
+            if (previousView == View.MAIN) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+                Parent root = loader.load();
+                MainController controller = loader.getController();
+                controller.setScene((Stage) LoggerPane.getScene().getWindow(), root);
+            } else if (previousView == View.STOPWATCH) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stopwatch.fxml"));
+                Parent root = loader.load();
+                StopwatchController controller = loader.getController();
+                controller.setScene((Stage) LoggerPane.getScene().getWindow(), root);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -146,5 +163,9 @@ public class LoggerController implements Initializable {
         if(loading)
             return;
         list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) && typePredicate(s));
+    }
+
+    public void setPreviousView(View previousView) {
+        this.previousView = previousView;
     }
 }
