@@ -1,13 +1,12 @@
 package agh.utils;
 
-    public enum LogMessageType {
-    STATUS("Status"),
-    COMM("Komunikacja"),
-    TIME("Pomiar czasu"),
-    OTHER("Inne");
+public enum LogSeverity { // Uneccessary because of LogLevels, however was in requirements
+    LOW("1"),
+    MEDIUM("2"),
+    HIGH("3");
 
     private String displayName;
-    LogMessageType(String displayName) {
+    LogSeverity(String displayName) {
         this.displayName = displayName;
     }
 

@@ -24,15 +24,25 @@
 
         <HBox alignment="BASELINE_CENTER">
             <VBox>
-                <Label text="Poziom" />
+                <Label text="Rodzaj" />
                 <CheckComboBox fx:id="logLevelFilterBox" prefWidth="200"/>
             </VBox>
 
             <Region HBox.hgrow="ALWAYS" />
+
+            <VBox>
+                <Label text="Poziom" />
+                <CheckComboBox fx:id="logSeverityFilterBox" prefWidth="200"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
             <VBox>
                 <Label text="Typ" />
                 <CheckComboBox fx:id="typeFilterBox"  prefWidth="200" />
             </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
 
             <VBox>
                 <Label text="Agent" />

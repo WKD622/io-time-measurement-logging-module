@@ -3,6 +3,7 @@ package agh.controllers;
 import agh.agents.*;
 import agh.utils.Agents;
 import agh.utils.LogLevel;
+import agh.utils.View;
 import jade.wrapper.ControllerException;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -40,6 +42,7 @@ public class StopwatchController implements Initializable {
     public Button logs;
     public Button quit;
     public Text timeRemaining;
+    public Label timeRemainingLabel;
     public Text timeElapsed;
     public AnchorPane pane;
     public TextArea parameters;
@@ -70,7 +73,10 @@ public class StopwatchController implements Initializable {
         Long time = currentStage.get().getValue();
         if (time != null) {
             long timeRemaining = time - timeElapsed;
+            this.timeRemainingLabel.setVisible(true);
             this.timeRemaining.setText(prepareTime(timeRemaining));
+        } else {
+            this.timeRemainingLabel.setVisible(false);
         }
     }
 
@@ -203,6 +209,7 @@ public class StopwatchController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/logger.fxml"));
             Parent root = loader.load();
             LoggerController controller = loader.getController();
+            controller.setPreviousView(View.STOPWATCH);
             controller.setScene((Stage) pane.getScene().getWindow(), root);
         } catch (IOException e) {
             e.printStackTrace();

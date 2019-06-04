@@ -1,5 +1,6 @@
 package agh.controllers;
 
+import agh.utils.View;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -80,6 +81,7 @@ public class MainController {
         try {
             root = loader.load();
             LoggerController controller = loader.getController();
+            controller.setPreviousView(View.MAIN);
             controller.setScene((Stage) mainPane.getScene().getWindow(), root);
         } catch (IOException e) {
             e.printStackTrace();

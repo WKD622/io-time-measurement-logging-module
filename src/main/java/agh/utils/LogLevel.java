@@ -1,6 +1,6 @@
 package agh.utils;
 
-public enum LogLevel {
+public enum LogLevel { // To jest wyświetlane jako "rodzaj" logów, ale odmawiam nazwania tego tak w kodzie
     DEBUG("Debug"),
     INFO("Informacja"),
     WARNING("Ostrzeżenie"),

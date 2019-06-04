@@ -9,6 +9,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ public class LoggerController implements Initializable {
     private Controller controller = Controller.getInstance();
     private boolean loading = false;
     private String LOG_FILENAME = "logs.txt";
+    private View previousView;
 
     @FXML
     private Pane LoggerPane;
@@ -39,6 +41,8 @@ public class LoggerController implements Initializable {
     private CheckComboBox<FilterItem> agentFilterBox;
     @FXML
     private CheckComboBox<FilterItem> typeFilterBox;
+    @FXML
+    private CheckComboBox<FilterItem> logSeverityFilterBox;
 
     private FilteredList<LogMessage> list;
 
@@ -53,6 +57,7 @@ public class LoggerController implements Initializable {
 
             loadTable();
             loadFilters();
+            tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         } catch (ControllerException e) {
             e.printStackTrace();
         }
@@ -66,7 +71,22 @@ public class LoggerController implements Initializable {
 
     @FXML
     void handleBack() {
-        controller.handleBack(LoggerPane);
+//        controller.handleBack(LoggerPane);
+        try {
+            if (previousView == View.MAIN) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+                Parent root = loader.load();
+                MainController controller = loader.getController();
+                controller.setScene((Stage) LoggerPane.getScene().getWindow(), root);
+            } else if (previousView == View.STOPWATCH) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/stopwatch.fxml"));
+                Parent root = loader.load();
+                StopwatchController controller = loader.getController();
+                controller.setScene((Stage) LoggerPane.getScene().getWindow(), root);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -94,14 +114,16 @@ public class LoggerController implements Initializable {
         timeCol.setCellValueFactory(new PropertyValueFactory("time"));
         TableColumn<LogMessage,String> agentCol = new TableColumn<>("Agent");
         agentCol.setCellValueFactory(new PropertyValueFactory("agent"));
-        TableColumn<LogMessage,String> levelCol = new TableColumn<>("Poziom");
+        TableColumn<LogMessage,String> levelCol = new TableColumn<>("Rodzaj");
         levelCol.setCellValueFactory(new PropertyValueFactory("level"));
+        TableColumn<LogMessage,String> severityCol = new TableColumn<>("Poziom");
+        severityCol.setCellValueFactory(new PropertyValueFactory("severity"));
         TableColumn<LogMessage,String> typeCol = new TableColumn<>("Typ");
         typeCol.setCellValueFactory(new PropertyValueFactory("type"));
         TableColumn<LogMessage,String> messageCol = new TableColumn<>("Wiadomość");
         messageCol.setCellValueFactory(new PropertyValueFactory("message"));
 
-        tableView.getColumns().setAll(timeCol, agentCol, levelCol, typeCol, messageCol);
+        tableView.getColumns().setAll(timeCol, agentCol, levelCol, severityCol, typeCol, messageCol);
     }
 
     private void loadFilters(){
@@ -118,11 +140,16 @@ public class LoggerController implements Initializable {
             typeFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
         }
 
+        for ( LogSeverity filter : LogSeverity.values()) {
+            logSeverityFilterBox.getItems().add(new FilterItem<>(filter, filter.toString()));
+        }
+
         loading = false;
 
         initCheckComboBox(agentFilterBox);
         initCheckComboBox(logLevelFilterBox);
         initCheckComboBox(typeFilterBox);
+        initCheckComboBox(logSeverityFilterBox);
     }
 
     private void initCheckComboBox(CheckComboBox<FilterItem> box){
@@ -142,9 +169,17 @@ public class LoggerController implements Initializable {
         return typeFilterBox.getCheckModel().getCheckedItems().stream().map(f -> f.key).anyMatch(k -> k == m.getType());
     }
 
+    private boolean severityPredicate(LogMessage m) {
+        return logSeverityFilterBox.getCheckModel().getCheckedItems().stream().map(f -> f.key).anyMatch(k -> k == m.getSeverity());
+    }
+
     private void updateFiltering(){
         if(loading)
             return;
-        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) && typePredicate(s));
+        list.setPredicate(s-> levelPredicate(s) && agentPredicate(s) && typePredicate(s) && severityPredicate(s));
+    }
+
+    public void setPreviousView(View previousView) {
+        this.previousView = previousView;
     }
 }
