@@ -1,6 +1,6 @@
 package agh.utils;
 
-public enum LogMessageType {
+    public enum LogMessageType {
     STATUS("Status"),
     COMM("Komunikacja"),
     TIME("Pomiar czasu"),
