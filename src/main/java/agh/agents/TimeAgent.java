@@ -24,7 +24,7 @@ public class TimeAgent extends Agent implements ITime {
     private CpuTimeStopwatch stoperM5p = new CpuTimeStopwatch(StopwatchType.LEARNING_M5P);
     private CpuTimeStopwatch stoperMlp = new CpuTimeStopwatch(StopwatchType.LEARNING_MLP);
     private CpuTimeStopwatch stoperVote = new CpuTimeStopwatch(StopwatchType.LEARNING_VOTE);
-    private static HashMap<StopwatchType, Stopwatch> stages = new HashMap<>();
+    private static HashMap<StopwatchType, Stopwatch> stopwatches = new HashMap<>();
     private static ObservableMap<StopwatchType, Long> observableTimes = FXCollections.observableHashMap();
 
     public TimeAgent() {
@@ -40,7 +40,7 @@ public class TimeAgent extends Agent implements ITime {
                 stoperM5p,
                 stoperMlp,
                 stoperVote
-        ).forEach(s -> stages.put(s.getType(), s));
+        ).forEach(s -> stopwatches.put(s.getType(), s));
     }
 
     public ObservableMap<StopwatchType, Long> getObservableTimes() {
@@ -53,7 +53,7 @@ public class TimeAgent extends Agent implements ITime {
         Thread T = new Thread(() -> {
             while (true) {
                 try {
-                    for (Map.Entry<StopwatchType, Stopwatch> e : stages.entrySet()) {
+                    for (Map.Entry<StopwatchType, Stopwatch> e : stopwatches.entrySet()) {
                         Stopwatch stopwatch = e.getValue();
                         if (stopwatch.isMeasuring()) {
                             Platform.runLater(() -> observableTimes.put(e.getKey(), stopwatch.time()));
@@ -71,25 +71,25 @@ public class TimeAgent extends Agent implements ITime {
     }
 
     @Override
-    public void start(StopwatchType stage) {
-        stages.get(stage).start();
+    public void start(StopwatchType type) {
+        stopwatches.get(type).start();
     }
 
     @Override
-    public void stop(StopwatchType stage) {
-        stages.get(stage).stop();
+    public void stop(StopwatchType type) {
+        stopwatches.get(type).stop();
     }
 
     @Override
-    public void reset(StopwatchType stage) {
-        stages.get(stage).reset();
+    public void reset(StopwatchType type) {
+        stopwatches.get(type).reset();
     }
 
     @Override
-    public boolean isMeasuring(StopwatchType stage) {
+    public boolean isMeasuring(StopwatchType type) {
         Boolean result = null;
         try {
-            Callable<Boolean> callable = () -> stages.get(stage).isMeasuring();
+            Callable<Boolean> callable = () -> stopwatches.get(type).isMeasuring();
             FutureTask<Boolean> futureTask = new FutureTask<>(callable);
             Platform.runLater(futureTask);
             result = futureTask.get();
@@ -100,8 +100,8 @@ public class TimeAgent extends Agent implements ITime {
     }
 
     @Override
-    public long time(StopwatchType stage) {
-        return stages.get(stage).time();
+    public long time(StopwatchType type) {
+        return stopwatches.get(type).time();
     }
 
     abstract class Stopwatch {
