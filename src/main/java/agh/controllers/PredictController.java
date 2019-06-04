@@ -148,11 +148,11 @@ public class PredictController implements Initializable {
         return parameters;
     }
 
-    private Map<TimeAgent.ProductionStage, Long> prepareStages() {
-        Map<TimeAgent.ProductionStage, Long> timers = new HashMap<>();
-        timers.put(TimeAgent.ProductionStage.WYTAPIANIE, parseTime(time.getText()));
-        timers.put(TimeAgent.ProductionStage.PODGRZANIE1, parseTime(time1.getText()));
-        timers.put(TimeAgent.ProductionStage.PODGRZANIE2, parseTime(time2.getText()));
+    private Map<TimeAgent.StopwatchType, Long> prepareStages() {
+        Map<TimeAgent.StopwatchType, Long> timers = new HashMap<>();
+        timers.put(TimeAgent.StopwatchType.WYTAPIANIE, parseTime(time.getText()));
+        timers.put(TimeAgent.StopwatchType.PODGRZANIE1, parseTime(time1.getText()));
+        timers.put(TimeAgent.StopwatchType.PODGRZANIE2, parseTime(time2.getText()));
         return timers;
     }
 

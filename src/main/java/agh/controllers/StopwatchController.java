@@ -54,13 +54,13 @@ public class StopwatchController implements Initializable {
     private final TimeAgent timeAgent = new TimeAgent();
     private ITime time;
 
-    private final Map<TimeAgent.ProductionStage, Long> stages = new LinkedHashMap<>();
-    private SimpleObjectProperty<Map.Entry<TimeAgent.ProductionStage, Long>> currentStage =
+    private final Map<TimeAgent.StopwatchType, Long> stages = new LinkedHashMap<>();
+    private SimpleObjectProperty<Map.Entry<TimeAgent.StopwatchType, Long>> currentStage =
             new SimpleObjectProperty<>(null);
-    private Iterator<Map.Entry<TimeAgent.ProductionStage, Long>> stagesIterator;
+    private Iterator<Map.Entry<TimeAgent.StopwatchType, Long>> stagesIterator;
     private SimpleBooleanProperty measuring = new SimpleBooleanProperty(false);
 
-    private final MapChangeListener<? super TimeAgent.ProductionStage, ? super Long> timesListener = change -> {
+    private final MapChangeListener<? super TimeAgent.StopwatchType, ? super Long> timesListener = change -> {
         if (change.getKey() == currentStage.get().getKey()) {
             setTimes(change.getValueAdded());
         }
@@ -166,7 +166,7 @@ public class StopwatchController implements Initializable {
         stage.show();
     }
 
-    void setStages(Map<TimeAgent.ProductionStage, Long> stages) {
+    void setStages(Map<TimeAgent.StopwatchType, Long> stages) {
         timeAgent.productionStages().forEach(s -> this.stages.put(s, null));
         this.stages.putAll(stages);
     }

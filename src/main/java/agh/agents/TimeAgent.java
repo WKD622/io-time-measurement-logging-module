@@ -1,29 +1,36 @@
 package agh.agents;
 
 import jade.core.Agent;
+import jade.lang.acl.MessageTemplate;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public class TimeAgent extends Agent implements ITime {
 
-    private RealTimeStopwatch stoperWytapianie = new RealTimeStopwatch(ProductionStage.WYTAPIANIE);
-    private RealTimeStopwatch stoperKrzepiniecie = new RealTimeStopwatch(ProductionStage.KRZEPNIECIE);
-    private RealTimeStopwatch stoperStudzenie1 = new RealTimeStopwatch(ProductionStage.STUDZENIE1);
-    private RealTimeStopwatch stoperPodgrzanie1 = new RealTimeStopwatch(ProductionStage.PODGRZANIE1);
-    private RealTimeStopwatch stoperStudzenie2 = new RealTimeStopwatch(ProductionStage.STUDZENIE2);
-    private RealTimeStopwatch stoperPodgrzanie2 = new RealTimeStopwatch(ProductionStage.PODGRZANIE2);
-    private RealTimeStopwatch stoperUszlachetnianie = new RealTimeStopwatch(ProductionStage.USZLACHETNIANIE);
-    private CpuTimeStopwatch stoperLearning = new CpuTimeStopwatch(ProductionStage.LEARNING);
-    private static HashMap<ProductionStage, Stopwatch> stages = new HashMap<>();
-    private static ObservableMap<ProductionStage, Long> observableTimes = FXCollections.observableHashMap();
+    private RealTimeStopwatch stoperWytapianie = new RealTimeStopwatch(StopwatchType.WYTAPIANIE);
+    private RealTimeStopwatch stoperKrzepiniecie = new RealTimeStopwatch(StopwatchType.KRZEPNIECIE);
+    private RealTimeStopwatch stoperStudzenie1 = new RealTimeStopwatch(StopwatchType.STUDZENIE1);
+    private RealTimeStopwatch stoperPodgrzanie1 = new RealTimeStopwatch(StopwatchType.PODGRZANIE1);
+    private RealTimeStopwatch stoperStudzenie2 = new RealTimeStopwatch(StopwatchType.STUDZENIE2);
+    private RealTimeStopwatch stoperPodgrzanie2 = new RealTimeStopwatch(StopwatchType.PODGRZANIE2);
+    private RealTimeStopwatch stoperUszlachetnianie = new RealTimeStopwatch(StopwatchType.USZLACHETNIANIE);
+    private CpuTimeStopwatch stoperForest = new CpuTimeStopwatch(StopwatchType.LEARNING_FOREST);
+    private CpuTimeStopwatch stoperM5p = new CpuTimeStopwatch(StopwatchType.LEARNING_M5P);
+    private CpuTimeStopwatch stoperMlp = new CpuTimeStopwatch(StopwatchType.LEARNING_MLP);
+    private CpuTimeStopwatch stoperVote = new CpuTimeStopwatch(StopwatchType.LEARNING_VOTE);
+    private static HashMap<StopwatchType, Stopwatch> stages = new HashMap<>();
+    private static ObservableMap<StopwatchType, Long> observableTimes = FXCollections.observableHashMap();
 
     public TimeAgent() {
         Arrays.asList(
@@ -34,11 +41,14 @@ public class TimeAgent extends Agent implements ITime {
                 stoperStudzenie2,
                 stoperPodgrzanie2,
                 stoperUszlachetnianie,
-                stoperLearning
+                stoperForest,
+                stoperM5p,
+                stoperMlp,
+                stoperVote
         ).forEach(s -> stages.put(s.getType(), s));
     }
 
-    public ObservableMap<ProductionStage, Long> getObservableTimes() {
+    public ObservableMap<StopwatchType, Long> getObservableTimes() {
         return observableTimes;
     }
 
@@ -48,7 +58,7 @@ public class TimeAgent extends Agent implements ITime {
         Thread T = new Thread(() -> {
             while (true) {
                 try {
-                    for (Map.Entry<ProductionStage, Stopwatch> e : stages.entrySet()) {
+                    for (Map.Entry<StopwatchType, Stopwatch> e : stages.entrySet()) {
                         Stopwatch stopwatch = e.getValue();
                         if (stopwatch.isMeasuring()) {
                             Platform.runLater(() -> observableTimes.put(e.getKey(), stopwatch.time()));
@@ -77,24 +87,24 @@ public class TimeAgent extends Agent implements ITime {
     }
 
     @Override
-    public void start(ProductionStage stage) {
+    public void start(StopwatchType stage) {
         stages.get(stage).start();
 //        System.out.println("started: " + stage.toString());
     }
 
     @Override
-    public void stop(ProductionStage stage) {
+    public void stop(StopwatchType stage) {
         stages.get(stage).stop();
 //        System.out.println("stopped: " + stage.toString());
     }
 
     @Override
-    public void reset(ProductionStage stage) {
+    public void reset(StopwatchType stage) {
         stages.get(stage).reset();
     }
 
     @Override
-    public boolean isMeasuring(ProductionStage stage) {
+    public boolean isMeasuring(StopwatchType stage) {
         Boolean result = null;
         try {
             Callable<Boolean> callable = () -> stages.get(stage).isMeasuring();
@@ -107,9 +117,14 @@ public class TimeAgent extends Agent implements ITime {
         return result;
     }
 
+    @Override
+    public long time(StopwatchType stage) {
+        return stages.get(stage).time();
+    }
+
     abstract class Stopwatch {
 
-        ProductionStage type;
+        StopwatchType type;
         boolean measuring;
         boolean ended;
         long start;
@@ -117,7 +132,7 @@ public class TimeAgent extends Agent implements ITime {
 
         final Supplier<Long> measurement;
 
-        Stopwatch(ProductionStage type, Supplier<Long> measurement) {
+        Stopwatch(StopwatchType type, Supplier<Long> measurement) {
             this.type = type;
             this.measurement = measurement;
 
@@ -125,7 +140,7 @@ public class TimeAgent extends Agent implements ITime {
             reset();
         }
 
-        ProductionStage getType() {
+        StopwatchType getType() {
             return type;
         }
 
@@ -169,14 +184,21 @@ public class TimeAgent extends Agent implements ITime {
 
     class RealTimeStopwatch extends Stopwatch {
 
-        RealTimeStopwatch(ProductionStage type) {
+        RealTimeStopwatch(StopwatchType type) {
             super(type, System::currentTimeMillis);
         }
     }
 
     class CpuTimeStopwatch extends Stopwatch {
 
-        CpuTimeStopwatch(ProductionStage type) {
+        CpuTimeStopwatch(StopwatchType type) {
+            super(type, System::nanoTime);
+        }
+    }
+
+    class UserTimeStopwatch extends Stopwatch {
+
+        UserTimeStopwatch(StopwatchType type) {
             super(type, System::nanoTime);
         }
     }
@@ -200,8 +222,11 @@ public class TimeAgent extends Agent implements ITime {
 //        END_USZLACHETNIANIE,
 //    }
 
-    public enum ProductionStage {
-        LEARNING,
+    public enum StopwatchType {
+        LEARNING_MLP,
+        LEARNING_M5P,
+        LEARNING_FOREST,
+        LEARNING_VOTE,
         WYTAPIANIE,
         KRZEPNIECIE,
         STUDZENIE1,
@@ -211,15 +236,15 @@ public class TimeAgent extends Agent implements ITime {
         USZLACHETNIANIE
     }
 
-    public List<ProductionStage> productionStages() {
-        final LinkedList<ProductionStage> result = new LinkedList<>();
-        result.add(ProductionStage.WYTAPIANIE);
-        result.add(ProductionStage.KRZEPNIECIE);
-        result.add(ProductionStage.STUDZENIE1);
-        result.add(ProductionStage.PODGRZANIE1);
-        result.add(ProductionStage.STUDZENIE2);
-        result.add(ProductionStage.PODGRZANIE2);
-        result.add(ProductionStage.USZLACHETNIANIE);
+    public List<StopwatchType> productionStages() {
+        final LinkedList<StopwatchType> result = new LinkedList<>();
+        result.add(StopwatchType.WYTAPIANIE);
+        result.add(StopwatchType.KRZEPNIECIE);
+        result.add(StopwatchType.STUDZENIE1);
+        result.add(StopwatchType.PODGRZANIE1);
+        result.add(StopwatchType.STUDZENIE2);
+        result.add(StopwatchType.PODGRZANIE2);
+        result.add(StopwatchType.USZLACHETNIANIE);
         return result;
     }
 }
