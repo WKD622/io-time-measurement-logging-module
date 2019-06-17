@@ -12,15 +12,14 @@ import weka.classifiers.Classifier;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import static agh.Main.productionData;
+import static agh.agents.TimeAgent.formatNanoTime;
 
 public class LearningAgent extends Agent {
 
-    private Classifier[] classififiers = new Classifier[]{productionData.getMlp(), productionData.getForest(), productionData.getM5p(), productionData.getVote()};
+    private Classifier[] classifiers = new Classifier[]{productionData.getMlp(), productionData.getForest(), productionData.getM5p(), productionData.getVote()};
     private Agents agent = Agents.LEARNING_AGENT;
 
     private ITime time;
@@ -114,7 +113,7 @@ public class LearningAgent extends Agent {
         time.start(typeCpu);
         time.start(typeUser);
         time.start(typeReal);
-        productionData.train("TrainingData.arff", classififiers[classifier]);
+        productionData.train("TrainingData.arff", classifiers[classifier]);
         reply = new ACLMessage(replyAck);
         long timeCpu = time.time(typeCpu);
         long timeUser = time.time(typeUser);
@@ -128,14 +127,5 @@ public class LearningAgent extends Agent {
         reply.setContent("success ");
         reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
         send(reply);
-    }
-
-    private String formatNanoTime(long timeSystem, long timeUser, long timeReal) {
-        String format = "s.SSSSSSSSS's'";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        String sCpu = formatter.format(LocalTime.ofNanoOfDay(timeSystem));
-        String sUser = formatter.format(LocalTime.ofNanoOfDay(timeUser));
-        String sReal = formatter.format(LocalTime.ofNanoOfDay(timeReal * 1000000));
-        return "SYSTEM=" + sCpu + ", " + "USER=" + sUser + ", " + "REAL=" + sReal;
     }
 }

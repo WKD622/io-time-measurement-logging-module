@@ -5,6 +5,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -255,5 +257,14 @@ public class TimeAgent extends Agent implements ITime {
         result.add(StopwatchType.PODGRZANIE2);
         result.add(StopwatchType.USZLACHETNIANIE);
         return result;
+    }
+
+    public static String formatNanoTime(long timeSystem, long timeUser, long timeReal) {
+        String format = "s.SSSSSSSSS's'";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        String sCpu = formatter.format(LocalTime.ofNanoOfDay(timeSystem));
+        String sUser = formatter.format(LocalTime.ofNanoOfDay(timeUser));
+        String sReal = formatter.format(LocalTime.ofNanoOfDay(timeReal * 1000000));
+        return "SYSTEM=" + sCpu + ", " + "USER=" + sUser + ", " + "REAL=" + sReal;
     }
 }
