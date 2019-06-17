@@ -66,6 +66,7 @@ public class LearningAgent extends Agent {
                                 training("mlp", 0, args, bean,
                                         TimeAgent.StopwatchType.LEARNING_MLP_CPU,
                                         TimeAgent.StopwatchType.LEARNING_MLP_USER,
+                                        TimeAgent.StopwatchType.LEARNING_MLP_REAL,
                                         AgentMessages.START_LEARNING_MLP_ACK
                                 );
                                 break;
@@ -73,6 +74,7 @@ public class LearningAgent extends Agent {
                                 training("m5p", 2, args, bean,
                                         TimeAgent.StopwatchType.LEARNING_M5P_CPU,
                                         TimeAgent.StopwatchType.LEARNING_M5P_USER,
+                                        TimeAgent.StopwatchType.LEARNING_M5P_REAL,
                                         AgentMessages.START_LEARNING_M5P_ACK
                                 );
                                 break;
@@ -80,6 +82,7 @@ public class LearningAgent extends Agent {
                                 training("forest", 1, args, bean,
                                         TimeAgent.StopwatchType.LEARNING_FOREST_CPU,
                                         TimeAgent.StopwatchType.LEARNING_FOREST_USER,
+                                        TimeAgent.StopwatchType.LEARNING_FOREST_REAL,
                                         AgentMessages.START_LEARNING_FOREST_ACK
                                 );
                                 break;
@@ -87,6 +90,7 @@ public class LearningAgent extends Agent {
                                 training("vote", 3, args, bean,
                                         TimeAgent.StopwatchType.LEARNING_VOTE_CPU,
                                         TimeAgent.StopwatchType.LEARNING_VOTE_USER,
+                                        TimeAgent.StopwatchType.LEARNING_VOTE_REAL,
                                         AgentMessages.START_LEARNING_VOTE_ACK
                                 );
                                 break;
@@ -101,6 +105,7 @@ public class LearningAgent extends Agent {
     private void training(String name, int classifier, Object[] args, ThreadMXBean bean,
                           TimeAgent.StopwatchType typeCpu,
                           TimeAgent.StopwatchType typeUser,
+                          TimeAgent.StopwatchType typeReal,
                           int replyAck) {
         ACLMessage reply;
         send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training " + name + " start"));
@@ -108,25 +113,29 @@ public class LearningAgent extends Agent {
         time.initializeMeasurement(typeUser, bean::getCurrentThreadUserTime);
         time.start(typeCpu);
         time.start(typeUser);
+        time.start(typeReal);
         productionData.train("TrainingData.arff", classififiers[classifier]);
         reply = new ACLMessage(replyAck);
         long timeCpu = time.time(typeCpu);
         long timeUser = time.time(typeUser);
+        long timeReal = time.time(typeReal);
         time.stop(typeCpu);
         time.stop(typeUser);
+        time.stop(typeReal);
         send(LoggingAgent.prepareLog(LogLevel.INFO, agent, "Training " + name + " time: " +
-                formatNanoTime(timeCpu - timeUser, timeUser)));
+                formatNanoTime(timeCpu - timeUser, timeUser, timeReal)));
         send(LoggingAgent.prepareLog(LogLevel.DEBUG, agent, "Training " + name + " end"));
         reply.setContent("success ");
         reply.addReceiver(new AID(args[0].toString(), AID.ISLOCALNAME));
         send(reply);
     }
 
-    private String formatNanoTime(long timeSystem, long timeUser) {
+    private String formatNanoTime(long timeSystem, long timeUser, long timeReal) {
         String format = "s.SSSSSSSSS's'";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         String sCpu = formatter.format(LocalTime.ofNanoOfDay(timeSystem));
         String sUser = formatter.format(LocalTime.ofNanoOfDay(timeUser));
-        return "SYSTEM=" + sCpu + ", " + "USER=" + sUser;
+        String sReal = formatter.format(LocalTime.ofNanoOfDay(timeReal * 1000000));
+        return "SYSTEM=" + sCpu + ", " + "USER=" + sUser + ", " + "REAL=" + sReal;
     }
 }

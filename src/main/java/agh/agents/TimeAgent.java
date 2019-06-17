@@ -22,12 +22,16 @@ public class TimeAgent extends Agent implements ITime {
     private RealTimeStopwatch stoperUszlachetnianie = new RealTimeStopwatch(StopwatchType.USZLACHETNIANIE);
     private CpuTimeStopwatch stoperForestCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_FOREST_CPU);
     private UserTimeStopwatch stoperForestUser = new UserTimeStopwatch(StopwatchType.LEARNING_FOREST_USER);
+    private RealTimeStopwatch stoperForestReal = new RealTimeStopwatch(StopwatchType.LEARNING_FOREST_REAL);
     private CpuTimeStopwatch stoperM5pCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_M5P_CPU);
     private UserTimeStopwatch stoperM5pUser = new UserTimeStopwatch(StopwatchType.LEARNING_M5P_USER);
+    private RealTimeStopwatch stoperM5pReal = new RealTimeStopwatch(StopwatchType.LEARNING_M5P_REAL);
     private CpuTimeStopwatch stoperMlpCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_MLP_CPU);
     private UserTimeStopwatch stoperMlpUser = new UserTimeStopwatch(StopwatchType.LEARNING_MLP_USER);
+    private RealTimeStopwatch stoperMlpReal = new RealTimeStopwatch(StopwatchType.LEARNING_MLP_REAL);
     private CpuTimeStopwatch stoperVoteCpu = new CpuTimeStopwatch(StopwatchType.LEARNING_VOTE_CPU);
     private UserTimeStopwatch stoperVoteUser = new UserTimeStopwatch(StopwatchType.LEARNING_VOTE_USER);
+    private RealTimeStopwatch stoperVoteReal = new RealTimeStopwatch(StopwatchType.LEARNING_VOTE_REAL);
     private static HashMap<StopwatchType, Stopwatch> stopwatches = new HashMap<>();
     private static ObservableMap<StopwatchType, Long> observableTimes = FXCollections.observableHashMap();
 
@@ -42,12 +46,16 @@ public class TimeAgent extends Agent implements ITime {
                 stoperUszlachetnianie,
                 stoperForestCpu,
                 stoperForestUser,
+                stoperForestReal,
                 stoperM5pCpu,
                 stoperM5pUser,
+                stoperM5pReal,
                 stoperMlpCpu,
                 stoperMlpUser,
+                stoperMlpReal,
                 stoperVoteCpu,
-                stoperVoteUser
+                stoperVoteUser,
+                stoperVoteReal
         ).forEach(s -> stopwatches.put(s.getType(), s));
     }
 
@@ -225,12 +233,16 @@ public class TimeAgent extends Agent implements ITime {
         USZLACHETNIANIE,
         LEARNING_VOTE_USER,
         LEARNING_VOTE_CPU,
+        LEARNING_VOTE_REAL,
         LEARNING_MLP_USER,
         LEARNING_MLP_CPU,
+        LEARNING_MLP_REAL,
         LEARNING_M5P_USER,
         LEARNING_M5P_CPU,
+        LEARNING_M5P_REAL,
         LEARNING_FOREST_USER,
-        LEARNING_FOREST_CPU
+        LEARNING_FOREST_CPU,
+        LEARNING_FOREST_REAL
     }
 
     public List<StopwatchType> productionStages() {
